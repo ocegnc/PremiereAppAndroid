@@ -15,6 +15,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -33,43 +37,69 @@ import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.myapp.ui.theme.MyAppTheme
+import kotlinx.serialization.Serializable
+import androidx.navigation.NavDestination.Companion.hasRoute
 
-@Serializable class Profil
-@Serializable class Edition
 
-val navController = rememberNavController()
-val navBackStackEntry by navController.currentBackStackEntryAsState()
-val currentDestination = navBackStackEntry?.destination
+@Serializable
+class Profil
+@Serializable
+class Films
+@Serializable
+class Acteurs
+@Serializable
+class Favoris
 
-Scaffold(
-    bottomBar = {
-        NavigationBar {
-            NavigationBarItem(
-                icon = { Icons.Filled.AccountCircle }, label = { Text("Mon profil") },
-                selected = currentDestination?.hasRoute<Profil>() == true,
-                onClick = { navController.navigate(Profil()) })
-            NavigationBarItem(
-                icon = { Icons.Filled.Create }, label = { Text("Edition du profil") },
-                selected = currentDestination?.hasRoute<Edition>() == true,
-                onClick = { navController.navigate(Edition()) })
-        }
-    })
+@Composable
+fun Screen() {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.AccountCircle , contentDescription = null)}, label = { Text("Mon profil") },
+                    selected = currentDestination?.hasRoute<Profil>() == true,
+                    onClick = { navController.navigate(Profil()) })
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Menu , contentDescription = null)}, label = { Text("Films") },
+                    selected = currentDestination?.hasRoute<Films>() == true,
+                    onClick = { navController.navigate(Films()) })
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Face , contentDescription = null)}, label = { Text("Acteurs") },
+                    selected = currentDestination?.hasRoute<Acteurs>() == true,
+                    onClick = { navController.navigate(Acteurs()) })
+                NavigationBarItem(
+                    icon = { Icon(Icons.Filled.Favorite , contentDescription = null)}, label = { Text("Favoris") },
+                    selected = currentDestination?.hasRoute<Favoris>() == true,
+                    onClick = { navController.navigate(Favoris()) })
+            }
+        })
     { innerPadding ->
         NavHost(navController, startDestination = Profil(),
             Modifier.padding(innerPadding)) {
-            composable<Profil> { ProfilScreen() }
-            composable<Edition> { EditionScreen() }
+            composable<Profil> { ProfilScreen(windowSizeClass) }
+            composable<Favoris> { FavorisScreen() }
+            composable<Films> { FilmsScreen() }
+            composable<Acteurs> { ActeursScreen() }
         }
     }
-
-@Composable
-fun ProfilScreen() {
-    Text("Mon profil")
 }
 
 @Composable
-fun EditionScreen(){
-    Text("Edition du profil")
+fun FilmsScreen(){
+    Text("Films")
+}
+@Composable
+fun ActeursScreen(){
+    Text("Acteurs")
+}
+@Composable
+fun FavorisScreen(){
+    Text("Mes favoris")
 }
 
 
@@ -79,15 +109,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
-                Screen(windowSizeClass)
+                Screen()
             }
         }
     }
 }
 
 @Composable
-fun Screen(classes: WindowSizeClass) {
+fun ProfilScreen(classes: WindowSizeClass) {
     val classeHauteur = classes.windowHeightSizeClass
     val classeLargeur = classes.windowWidthSizeClass
     when (classeLargeur) {
@@ -107,7 +136,6 @@ fun Screen(classes: WindowSizeClass) {
                 Spacer(modifier = Modifier.height(40.dp))
                 LogosText()
                 Spacer(modifier = Modifier.height(100.dp))
-                Button()
             }
         }
         else -> {
@@ -133,7 +161,6 @@ fun Screen(classes: WindowSizeClass) {
                 ){
                     LogosText()
                     Spacer(modifier = Modifier.height(40.dp))
-                    Button()
                 }
             }
         }
