@@ -1,10 +1,13 @@
 package com.example.myapp
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -22,6 +25,64 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
+import kotlinx.serialization.Serializable
+
+@Serializable
+class Profil
+
+@Composable
+fun ProfilScreen(classes: WindowSizeClass) {
+    val classeHauteur = classes.windowHeightSizeClass
+    val classeLargeur = classes.windowWidthSizeClass
+    when (classeLargeur) {
+        WindowWidthSizeClass.COMPACT -> /* largeur faible */ {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                MonImage(id = R.drawable.tortue)
+                Spacer(modifier = Modifier.height(10.dp))
+                Name()
+                Spacer(modifier = Modifier.height(20.dp))
+                MonTexte()
+                Spacer(modifier = Modifier.height(40.dp))
+                LogosText()
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+        }
+        else -> {
+            Row (
+                Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Column(
+                    modifier= Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    MonImage(id = R.drawable.tortue)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Name()
+                    Spacer(modifier = Modifier.height(20.dp))
+                    MonTexte()
+                }
+                Column(
+                    modifier= Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    LogosText()
+                    Spacer(modifier = Modifier.height(40.dp))
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun MonImage(id: Int) {
@@ -46,15 +107,15 @@ fun Name(){
 
 @Composable
 fun MonTexte(){
-        Modifier.fillMaxSize()
-        Text(
-            text = "Etudiante ingénieure informatique",
-            style = MaterialTheme.typography.bodyLarge,
-        )
-        Text(
-            text = "Ecole ISIS - INU Champollion",
-            fontStyle = FontStyle.Italic
-        )
+    Modifier.fillMaxSize()
+    Text(
+        text = "Etudiante ingénieure informatique",
+        style = MaterialTheme.typography.bodyLarge,
+    )
+    Text(
+        text = "Ecole ISIS - INU Champollion",
+        fontStyle = FontStyle.Italic
+    )
 }
 
 @Composable

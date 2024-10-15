@@ -5,6 +5,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
@@ -39,19 +42,12 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.example.myapp.ui.theme.MyAppTheme
 import kotlinx.serialization.Serializable
 import androidx.navigation.NavDestination.Companion.hasRoute
-
-
-@Serializable
-class Profil
-@Serializable
-class Films
-@Serializable
-class Acteurs
-@Serializable
-class Favoris
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 
 @Composable
-fun Screen() {
+fun Screen(viewModel: MainViewModel) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -59,15 +55,19 @@ fun Screen() {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(containerColor = MaterialTheme.colorScheme.primaryContainer, contentColor = MaterialTheme.colorScheme.primary,) {
                 NavigationBarItem(
                     icon = { Icon(Icons.Filled.AccountCircle , contentDescription = null)}, label = { Text("Mon profil") },
                     selected = currentDestination?.hasRoute<Profil>() == true,
                     onClick = { navController.navigate(Profil()) })
                 NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Menu , contentDescription = null)}, label = { Text("Films") },
+                    icon = { Image( painterResource(R.drawable.baseline_movie_24) , contentDescription = null) }, label = { Text("Films") },
                     selected = currentDestination?.hasRoute<Films>() == true,
                     onClick = { navController.navigate(Films()) })
+                NavigationBarItem(
+                    icon = { Image( painterResource(R.drawable.baseline_tv_24) , contentDescription = null)}, label = { Text("Series") },
+                    selected = currentDestination?.hasRoute<Series>() == true,
+                    onClick = { navController.navigate(Series()) })
                 NavigationBarItem(
                     icon = { Icon(Icons.Filled.Face , contentDescription = null)}, label = { Text("Acteurs") },
                     selected = currentDestination?.hasRoute<Acteurs>() == true,
@@ -77,93 +77,36 @@ fun Screen() {
                     selected = currentDestination?.hasRoute<Favoris>() == true,
                     onClick = { navController.navigate(Favoris()) })
             }
-        })
+        }
+    )
+
     { innerPadding ->
         NavHost(navController, startDestination = Profil(),
             Modifier.padding(innerPadding)) {
             composable<Profil> { ProfilScreen(windowSizeClass) }
             composable<Favoris> { FavorisScreen() }
-            composable<Films> { FilmsScreen() }
+            composable<Films> { FilmsScreen(viewModel) }
+            composable<Series> { SeriesScreen() }
             composable<Acteurs> { ActeursScreen() }
         }
     }
-}
-
-@Composable
-fun FilmsScreen(){
-    Text("Films")
-}
-@Composable
-fun ActeursScreen(){
-    Text("Acteurs")
-}
-@Composable
-fun FavorisScreen(){
-    Text("Mes favoris")
 }
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewmodel : MainViewModel by viewModels()
+
         enableEdgeToEdge()
         setContent {
             MyAppTheme {
-                Screen()
+                Screen(viewmodel)
             }
         }
     }
 }
 
-@Composable
-fun ProfilScreen(classes: WindowSizeClass) {
-    val classeHauteur = classes.windowHeightSizeClass
-    val classeLargeur = classes.windowWidthSizeClass
-    when (classeLargeur) {
-        WindowWidthSizeClass.COMPACT -> /* largeur faible */ {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MonImage(id = R.drawable.tortue)
-                Spacer(modifier = Modifier.height(10.dp))
-                Name()
-                Spacer(modifier = Modifier.height(20.dp))
-                MonTexte()
-                Spacer(modifier = Modifier.height(40.dp))
-                LogosText()
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-        }
-        else -> {
-            Row (
-                Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Column(
-                    modifier=Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    MonImage(id = R.drawable.tortue)
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Name()
-                    Spacer(modifier = Modifier.height(20.dp))
-                    MonTexte()
-                }
-                Column(
-                    modifier=Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    LogosText()
-                    Spacer(modifier = Modifier.height(40.dp))
-                }
-            }
-        }
-    }
-}
+
 

@@ -71,4 +71,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose.v280)
+    implementation(libs.retrofit)
+    implementation(libs.converter.moshi)
 }
