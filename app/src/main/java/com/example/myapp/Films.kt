@@ -16,11 +16,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import kotlinx.serialization.Serializable
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -53,12 +55,16 @@ fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
     }
 }
 
+
 @Composable
 fun MovieItem(movie: Movie, navController: NavController) {
     Card(
         onClick = { navController.navigate("movieDetail/${movie.id}") },
-        modifier = Modifier
-            .padding(8.dp)
+        modifier = Modifier.padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFFE88504),
+            contentColor = Color.Black
+        )
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
             AsyncImage(
