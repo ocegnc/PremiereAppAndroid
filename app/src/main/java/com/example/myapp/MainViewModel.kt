@@ -15,7 +15,7 @@ class MainViewModel(): ViewModel() {
         .baseUrl("https://api.themoviedb.org/3/")
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
-        .create(Api::class.java);
+        .create(TmdbApi::class.java);
 
     val movies = MutableStateFlow<MovieList>(MovieList())
     val movie = MutableStateFlow<Movie>(Movie())

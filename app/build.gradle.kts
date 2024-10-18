@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.adaptive.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,4 +74,5 @@ dependencies {
     implementation(libs.androidx.navigation.compose.v280)
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.coil.compose)
 }
