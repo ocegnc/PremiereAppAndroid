@@ -85,7 +85,7 @@ fun Screen(viewModel: MainViewModel) {
             Modifier.padding(innerPadding)) {
             composable<Profil> { ProfilScreen(windowSizeClass) }
             composable<Favoris> { FavorisScreen() }
-            composable<Films> { FilmsScreen(viewModel) }
+            composable<Films> { FilmsScreen(viewModel, navController) }
             composable<Series> { SeriesScreen() }
             composable<Acteurs> { ActeursScreen() }
         }
