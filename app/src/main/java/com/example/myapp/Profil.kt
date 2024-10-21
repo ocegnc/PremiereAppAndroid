@@ -45,7 +45,7 @@ fun ProfilScreen(classes: WindowSizeClass) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MonImage(id = R.drawable.nuit_etoilee)
+                MonImage(id = R.drawable.portrait)
                 Spacer(modifier = Modifier.height(10.dp))
                 Name()
                 Spacer(modifier = Modifier.height(20.dp))
