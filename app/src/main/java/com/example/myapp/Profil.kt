@@ -45,7 +45,7 @@ fun ProfilScreen(classes: WindowSizeClass) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                MonImage(id = R.drawable.tortue)
+                MonImage(id = R.drawable.nuit_etoilee)
                 Spacer(modifier = Modifier.height(10.dp))
                 Name()
                 Spacer(modifier = Modifier.height(20.dp))
@@ -65,7 +65,7 @@ fun ProfilScreen(classes: WindowSizeClass) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    MonImage(id = R.drawable.tortue)
+                    MonImage(id = R.drawable.nuit_etoilee)
                     Spacer(modifier = Modifier.height(10.dp))
                     Name()
                     Spacer(modifier = Modifier.height(20.dp))
@@ -88,7 +88,7 @@ fun ProfilScreen(classes: WindowSizeClass) {
 fun MonImage(id: Int) {
     Image(
         painterResource(id),
-        contentDescription = "Tortue",
+        contentDescription = "nuit étoilée",
         contentScale = ContentScale.Crop,
         modifier = Modifier
             .size(150.dp)
