@@ -12,7 +12,7 @@ data class MovieList(
 data class Movie(
     val adult: Boolean = false,
     val backdrop_path: String = "",
-    val genre_ids: List<Int> = listOf(),
+    val genre_ids: List<Genre> = listOf(),
     val id: Int = 0,
     val media_type: String = "",
     val original_language: String = "",
@@ -25,4 +25,9 @@ data class Movie(
     val video: Boolean = false,
     val vote_average: Double = 0.0,
     val vote_count: Int = 0
+)
+
+data class Genre(
+    val id: Int = 0,
+    val name: String = ""
 )

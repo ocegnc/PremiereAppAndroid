@@ -62,7 +62,7 @@ fun MovieItem(movie: Movie, navController: NavController) {
         onClick = { navController.navigate("movieDetail/${movie.id}") },
         modifier = Modifier.padding(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE88504),
+            containerColor = Color(0xFF0ABAB5),
             contentColor = Color.Black
         )
     ) {
@@ -75,5 +75,21 @@ fun MovieItem(movie: Movie, navController: NavController) {
             )
             Text(text = movie.title, style = MaterialTheme.typography.bodyMedium)
         }
+    }
+}
+
+@Composable
+fun DetailsScreen(viewModel: MainViewModel, navController: NavController, movieId: String) {
+    val viewModel: MainViewModel = viewModel()
+    val movie by viewModel.movie.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.getMovieDetails(movieId)
+    }
+
+    var genreNames = ""
+    for(genre in movie.genre_ids)
+    {
+        genreNames += genre.name + " "
     }
 }

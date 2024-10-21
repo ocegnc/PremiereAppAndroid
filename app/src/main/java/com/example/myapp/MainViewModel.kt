@@ -26,5 +26,10 @@ class MainViewModel(): ViewModel() {
         }
     }
 
+    fun getMovieDetails(id : String){
+        viewModelScope.launch {
+            movie.value = retrofit.getMovieDetails(id,apikey)
+        }
+    }
 
 }
