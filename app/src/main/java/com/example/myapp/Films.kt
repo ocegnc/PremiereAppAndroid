@@ -78,18 +78,20 @@ fun MovieItem(movie: Movie, navController: NavController) {
     }
 }
 
-@Composable
-fun DetailsScreen(viewModel: MainViewModel, navController: NavController, movieId: String) {
-    val viewModel: MainViewModel = viewModel()
-    val movie by viewModel.movie.collectAsState()
-
-    LaunchedEffect(key1 = true) {
-        viewModel.getMovieDetails(movieId)
-    }
-
-    var genreNames = ""
-    for(genre in movie.genre_ids)
-    {
-        genreNames += genre.name + " "
-    }
-}
+//@Composable
+//fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId: String) {
+//    val viewModel: MainViewModel = viewModel()
+//    val movie by viewModel.movie.collectAsState()
+//
+//    LaunchedEffect(key1 = true) {
+//        viewModel.getMovieDetails(movieId)
+//    }
+//
+//    var genreNames = ""
+//    for(genre in movie.genre_ids)
+//    {
+//        genreNames += genre.name + " "
+//    }
+//
+//
+//}

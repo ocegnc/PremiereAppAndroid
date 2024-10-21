@@ -11,4 +11,9 @@ interface TmdbApi {
     @GET("movie/{id}?append_to_response=credits")
     suspend fun getMovieDetails(@Path("id") id: String, @Query("api_key") apiKey : String): Movie
 
+    @GET("trending/tv/week")
+    suspend fun getTvList(@Query("api_key") apiKey : String): Tv
+
+    @GET("trending/person/week")
+    suspend fun getActorList(@Query("api_key") apiKey : String): ActorList
 }

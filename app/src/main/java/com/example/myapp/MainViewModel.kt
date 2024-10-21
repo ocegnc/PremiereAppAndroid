@@ -19,6 +19,8 @@ class MainViewModel(): ViewModel() {
 
     val movies = MutableStateFlow<MovieList>(MovieList())
     val movie = MutableStateFlow<Movie>(Movie())
+    val tv = MutableStateFlow<Tv>(Tv())
+    val actors = MutableStateFlow<ActorList>(ActorList())
 
     fun getMovies(){
         viewModelScope.launch {
@@ -29,6 +31,18 @@ class MainViewModel(): ViewModel() {
     fun getMovieDetails(id : String){
         viewModelScope.launch {
             movie.value = retrofit.getMovieDetails(id,apikey)
+        }
+    }
+
+    fun getTv(){
+        viewModelScope.launch {
+            tv.value = retrofit.getTvList(apikey)
+        }
+    }
+
+    fun getActors(){
+        viewModelScope.launch {
+            actors.value = retrofit.getActorList(apikey)
         }
     }
 

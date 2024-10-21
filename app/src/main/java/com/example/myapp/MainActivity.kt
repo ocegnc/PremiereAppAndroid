@@ -99,8 +99,8 @@ fun Screen(viewModel: MainViewModel) {
             composable<Profil> { ProfilScreen(windowSizeClass) }
             composable<Favoris> { FavorisScreen() }
             composable<Films> { FilmsScreen(viewModel, navController) }
-            composable<Series> { SeriesScreen() }
-            composable<Acteurs> { ActeursScreen() }
+            composable<Series> { SeriesScreen(viewModel, navController) }
+            composable<Acteurs> { ActeursScreen(viewModel, navController) }
         }
     }
 }
