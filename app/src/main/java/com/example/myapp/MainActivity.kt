@@ -54,6 +54,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 
+@Serializable
+class DetailsMovie(val movieId: String)
+
+@Serializable
+class DetailsSerie(val serieId: String)
+
+@Serializable
+class DetailsActor(val actorId: String)
+
 @Composable
 fun Screen(viewModel: MainViewModel) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -105,6 +114,30 @@ fun Screen(viewModel: MainViewModel) {
             composable<Films> { FilmsScreen(viewModel, navController) }
             composable<Series> { SeriesScreen(viewModel, navController) }
             composable<Acteurs> { ActeursScreen(viewModel, navController) }
+            composable("movieDetail/{movieid}"){ backStackEntry ->
+                val movieId = backStackEntry.arguments?.getString("movieid") ?: ""
+                DetailsMovie(
+                    viewModel = viewModel,
+                    navController = navController,
+                    movieId = movieId,
+                )
+            }
+            composable("serieDetail/{tvid}"){ backStackEntry ->
+                val serieId = backStackEntry.arguments?.getString("tvid") ?: ""
+                DetailsSerie(
+                    viewModel = viewModel,
+                    navController = navController,
+                    serieId = serieId,
+                )
+            }
+            composable("actorDetail/{personid}"){ backStackEntry ->
+                val actorId = backStackEntry.arguments?.getString("personid") ?: ""
+                DetailsActor(
+                    viewModel = viewModel,
+                    navController = navController,
+                    actorId = actorId,
+                )
+            }
         }
     }
 }

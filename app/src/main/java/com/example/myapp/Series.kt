@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import kotlinx.serialization.Serializable
@@ -73,7 +75,7 @@ fun TvItem(serie: Serie, navController: NavController) {
         onClick = { navController.navigate("serieDetail/${serie.id}") },
         modifier = Modifier.padding(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF0ABAB5),
+            containerColor = Color(0xFFFFDF00),
             contentColor = Color.Black
         )
     ) {
@@ -89,20 +91,23 @@ fun TvItem(serie: Serie, navController: NavController) {
     }
 }
 
-//@Composable
-//fun DetailsSerie(viewModel: MainViewModel, navController: NavController, serieId: String) {
-//    val viewModel: MainViewModel = viewModel()
-//    val serie by viewModel.serie.collectAsState()
-//
-//    LaunchedEffect(key1 = true) {
-//        viewModel.getSerieDetails(serieId)
-//    }
-//
-//    var genreNames = ""
-//    for(genre in serie.genre_ids)
-//    {
-//        genreNames += genre.name + " "
-//    }
-//
-//
-//}
+@Composable
+fun DetailsSerie(viewModel: MainViewModel, navController: NavController, serieId: String) {
+    val viewModel: MainViewModel = viewModel()
+    val serie by viewModel.serie.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.getSerieDetails(serieId)
+    }
+
+    var genreNames = ""
+    for(genre in serie.genres)
+    {
+        genreNames += genre.name + " "
+    }
+
+    LazyColumn {
+
+    }
+
+}
