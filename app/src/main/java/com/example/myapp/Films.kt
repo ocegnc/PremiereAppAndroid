@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -118,9 +119,11 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
     }
 
     var genreNames = ""
-    for(genre in movie.genres)
-    {
-        genreNames += genre.name + "&"
+    for ((index, genre) in movie.genres.withIndex()) {
+        genreNames += genre.name
+        if (index < movie.genres.size - 1) {
+            genreNames += " & "
+        }
     }
 
 //    val date = movie.release_date
@@ -144,11 +147,8 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     text = (movie.original_title),
                     fontSize = 30.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    //fontStyle = ,
                     fontWeight = FontWeight.Bold
                 )
-                Text(text = movie.release_date)
-                Text(text = genreNames)
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/w780${movie.backdrop_path}",
                     contentDescription = "Image film ${movie.title}",
@@ -159,29 +159,59 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
         }
         item {
             Row(
-                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
                     model = "https://image.tmdb.org/t/p/w780${movie.poster_path}",
                     contentDescription = "Image film ${movie.title}",
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .size(200.dp)
                 )
+                Column {
+                    Text(text = movie.release_date)
+                    Text(text = genreNames, fontStyle = FontStyle.Italic)
+                }
             }
         }
-        item { 
-            Column {
-                Text(text = "Synopsis")
-                Text(text = movie.overview)
+        item {
+            Column(
+                modifier = Modifier
+                    .padding(top = 10.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Synopsis",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+                Text(
+                    text = movie.overview,
+                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+                )
             }
         }
         item {
             Column {
-                Text(text = "A l'affiche ...")
+                Text(
+                    text = "A l'affiche ...",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                )
             }
             LazyRow {
-
+                items(movie.credits.cast.take(15)){
+                        cast ->
+                    val actor = castToActor(cast)
+                    ActorItem(
+                        actor = actor,
+                        navController = navController,
+                        character = cast.character
+                    )
             }
         }
     }

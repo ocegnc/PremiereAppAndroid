@@ -1,5 +1,6 @@
 package com.example.myapp
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -104,4 +105,36 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
 
     }
 
+}
+
+fun castToActor(cast : Cast) : Actor{
+    Log.d("test","le profile path : " + cast.profile_path)
+    if(cast.profile_path == null){
+        return Actor(
+            cast.adult,
+            cast.gender,
+            cast.id.toString(),
+            listOf().toString(),
+            cast.known_for_department,
+            "",
+            cast.name,
+            cast.original_name,
+            cast.popularity.toString(),
+            "",
+            "",
+            ""
+        )
+    }
+    return Actor(
+        cast.adult,
+        cast.gender,
+        cast.id.toString(),
+        listOf().toString(),
+        cast.known_for_department,
+        "",
+        cast.name,
+        cast.original_name,
+        cast.popularity.toString(),
+        cast.profile_path
+    )
 }
