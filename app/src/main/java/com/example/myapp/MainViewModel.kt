@@ -26,37 +26,37 @@ class MainViewModel(): ViewModel() {
 
     fun getMovies(){
         viewModelScope.launch {
-            movies.value = retrofit.getMovieList(apikey)
+            movies.value = retrofit.getMovieList(apikey,"fr")
         }
     }
 
     fun getMovieDetails(id : String){
         viewModelScope.launch {
-            movie.value = retrofit.getMovieDetails(id,apikey)
+            movie.value = retrofit.getMovieDetails(id,apikey,"fr")
         }
     }
 
     fun getTv(){
         viewModelScope.launch {
-            tv.value = retrofit.getTvList(apikey)
+            tv.value = retrofit.getTvList(apikey,"fr")
         }
     }
 
     fun getSerieDetails(id : String){
         viewModelScope.launch {
-            serie.value = retrofit.getSerieDetails(id,apikey)
+            serie.value = retrofit.getSerieDetails(id,apikey,"fr")
         }
     }
 
     fun getActors(){
         viewModelScope.launch {
-            actors.value = retrofit.getActorList(apikey)
+            actors.value = retrofit.getActorList(apikey,"fr")
         }
     }
 
     fun getActorDetails(id : String){
         viewModelScope.launch {
-            actor.value = retrofit.getActorDetails(id,apikey)
+            actor.value = retrofit.getActorDetails(id,apikey,"fr")
         }
     }
 

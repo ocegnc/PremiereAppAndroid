@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -135,7 +136,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
 //    }
 
 
-    LazyColumn (
+    LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(top = 60.dp, bottom = 80.dp)
     ) {
@@ -162,7 +163,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                 modifier = Modifier
                     .padding(top = 10.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 AsyncImage(
@@ -204,94 +205,15 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                 )
             }
             LazyRow {
-                items(movie.credits.cast.take(15)){
-                        cast ->
+                items(movie.credits.cast.take(15)) { cast ->
                     val actor = castToActor(cast)
                     ActorItem(
                         actor = actor,
                         navController = navController,
                         character = cast.character
                     )
+                }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-//Image(
-//painter = rememberAsyncImagePainter(
-//ImageRequest.Builder(LocalContext.current)
-//.data(data = "https://image.tmdb.org/t/p/w1280" + movie.backdrop_path)
-//.apply(block = fun ImageRequest.Builder.() {
-//    crossfade(true)
-//    size(
-//        1280,
-//        1000
-//    )
-//}).build()
-//),
-//contentDescription = "Image film ${movie.title}",
-//modifier = Modifier
-//.fillMaxWidth()
-//.padding(start = 5.dp, end = 5.dp)
-//)
-//}
-//}
-//item{
-//    Row(
-//        modifier = Modifier
-//            .padding(top = 5.dp)
-//            .fillMaxWidth(),
-//        horizontalArrangement = Arrangement.spacedBy(50.dp),
-//        verticalAlignment = Alignment.CenterVertically
-//    ){
-//        Image(
-//            painter = rememberAsyncImagePainter(
-//                ImageRequest.Builder(LocalContext.current)
-//                    .data(data = "https://image.tmdb.org/t/p/w780" + movie.poster_path)
-//                    .apply(block = fun ImageRequest.Builder.() {
-//                        crossfade(true)
-//                        size(
-//                            200,
-//                            200
-//                        )
-//                    }).build()
-//            ),
-//            contentDescription = "Image film ${movie.title}",
-//            modifier = Modifier.size(200.dp)
-//        )
-//        Column {
-//            Text(text = formatDate(movie.release_date), fontSize = 15.sp,color = MaterialTheme.colorScheme.primary, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
-//            Text(text = genreNames, fontSize = 15.sp,color = MaterialTheme.colorScheme.primary, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)
-//        }
-//    }
-//}
-//item{
-//    Column {
-//        Text(text = "Synopsis", fontSize = 20.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 15.dp))
-//        Text(text = movie.overview, fontSize = 12.sp, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp))
-//    }
-//}
-//item{
-//    Text(text = "Têtes d'affiche", fontSize = 20.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, color = MaterialTheme.colorScheme.primary, modifier = Modifier.padding(start = 20.dp))
-//    LazyRow {
-//        items(movie.credits.cast.take(15)){
-//                cast ->
-//            val actor = castToActor(cast)
-//            ActorBox(
-//                actor = actor,
-//                windowSizeClass = windowSizeClass,
-//                navController = navController,
-//                character = cast.character
-//            )
-//        }
-//    }
-//}
-//}

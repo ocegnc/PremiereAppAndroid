@@ -63,7 +63,7 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
                 .padding(start = 20.dp, end = 20.dp)
         ) {
             items(actors.results) { actor ->
-                ActorItem(actor = actor, navController = navController)
+                ActorItem(actor = actor, navController = navController, "")
             }
         }
     }
@@ -71,7 +71,7 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
 
 
 @Composable
-fun ActorItem(actor: Actor, navController: NavController) {
+fun ActorItem(actor: Actor, navController: NavController, character : String) {
     Card(
         onClick = { navController.navigate("actorDetail/${actor.id}") },
         modifier = Modifier.padding(8.dp),
@@ -107,34 +107,14 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
 
 }
 
-fun castToActor(cast : Cast) : Actor{
-    Log.d("test","le profile path : " + cast.profile_path)
-    if(cast.profile_path == null){
-        return Actor(
-            cast.adult,
-            cast.gender,
-            cast.id.toString(),
-            listOf().toString(),
-            cast.known_for_department,
-            "",
-            cast.name,
-            cast.original_name,
-            cast.popularity.toString(),
-            "",
-            "",
-            ""
-        )
-    }
+fun castToActor(cast: Cast): Actor {
     return Actor(
-        cast.adult,
-        cast.gender,
-        cast.id.toString(),
-        listOf().toString(),
-        cast.known_for_department,
-        "",
-        cast.name,
-        cast.original_name,
-        cast.popularity.toString(),
-        cast.profile_path
+        id = cast.id.toString(),
+        name = cast.name,
+        biography = "",
+        gender = cast.gender.toString(),
+        profile_path = cast.profile_path ?: "",
+        popularity = cast.popularity
     )
 }
+

@@ -158,7 +158,7 @@ data class ActorList(
 
 data class Actor(
     val adult: Boolean = false,
-    val also_known_as: List<Also_known_as> = listOf(),
+    val also_known_as: List<String> = listOf(),
     val biography: String = "",
     val birthday: String = "",
     val deathday: Any = Any(),
