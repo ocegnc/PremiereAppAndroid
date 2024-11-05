@@ -2,15 +2,19 @@ package com.example.myapp
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -22,10 +26,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -63,7 +72,7 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
                 .padding(start = 20.dp, end = 20.dp)
         ) {
             items(actors.results) { actor ->
-                ActorItem(actor = actor, navController = navController, "")
+                ActorItem(actor = actor, navController = navController, "", false)
             }
         }
     }
@@ -71,12 +80,12 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
 
 
 @Composable
-fun ActorItem(actor: Actor, navController: NavController, character : String) {
+fun ActorItem(actor: Actor, navController: NavController, character : String, isDetailPage : Boolean) {
     Card(
         onClick = { navController.navigate("actorDetail/${actor.id}") },
         modifier = Modifier.padding(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF72BF67),
+            containerColor = if (isDetailPage) Color.Transparent else Color(0xFF72BF67),
             contentColor = Color.Black
         )
     ) {
@@ -84,8 +93,9 @@ fun ActorItem(actor: Actor, navController: NavController, character : String) {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/w780${actor.profile_path}",
                 contentDescription = "Image film ${actor.name}",
-                modifier = Modifier
-                    .fillMaxWidth()
+                if (isDetailPage){Modifier
+                    .clip(CircleShape)
+                    .size(100.dp)} else { Modifier.fillMaxWidth() }
             )
             Text(text = actor.name, style = MaterialTheme.typography.bodyMedium)
         }
@@ -101,10 +111,88 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
         viewModel.getActorDetails(actorId)
     }
 
-    LazyColumn {
-
+    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(top = 60.dp, bottom = 80.dp)
+    ) {
+        item{
+            Text(
+                text = (actor.name),
+                fontSize = 30.sp,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center)
+        }
+        item {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.Start
+            ){
+                photoActor(actor)
+                infoActeur(actor)
+            }
+        }
+        item {
+            biographie(actor)
+        }
+        item {
+            knownFor(actor)
+        }
     }
 
+}
+
+@Composable
+fun photoActor(actor: Actor){
+        AsyncImage(
+            model = "https://image.tmdb.org/t/p/w780${actor.profile_path}",
+            contentDescription = "Image film ${actor.name}",
+            modifier = Modifier
+                .size(200.dp)
+                .fillMaxSize()
+        )
+    }
+
+@Composable
+fun infoActeur(actor: Actor) {
+    Column(modifier = Modifier
+        .padding(16.dp)
+        .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Date de naissance : ${actor.birthday}",
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.primary,
+        )
+        Text(
+            text = "Lieu de naissance : ${actor.place_of_birth}",
+            fontSize = 15.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+    }
+}
+
+@Composable
+fun biographie(actor: Actor){
+    Text(
+        text = "Biographie : ${actor.biography}",
+        fontSize = 15.sp,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(top = 10.dp)
+    )
+}
+
+@Composable
+fun knownFor(actor: Actor){
+    Text(
+        text = "Films : ${actor.also_known_as}",
+        fontSize = 15.sp,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(top = 10.dp)
+    )
 }
 
 fun castToActor(cast: Cast): Actor {

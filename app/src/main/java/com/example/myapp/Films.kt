@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -138,23 +139,25 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 60.dp, bottom = 80.dp)
+        modifier = Modifier.padding(bottom = 80.dp)
     ) {
         item {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                AsyncImage(
+                    model = "https://image.tmdb.org/t/p/w780${movie.backdrop_path}",
+                    contentDescription = "Image film ${movie.title}",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                )
                 Text(
                     text = (movie.original_title),
                     fontSize = 30.sp,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
-                )
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w780${movie.backdrop_path}",
-                    contentDescription = "Image film ${movie.title}",
-                    modifier = Modifier
-                        .fillMaxWidth()
                 )
             }
         }
@@ -188,7 +191,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     text = "Synopsis",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    modifier = Modifier.padding(start = 10.dp)
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
                 )
                 Text(
                     text = movie.overview,
@@ -210,7 +213,8 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     ActorItem(
                         actor = actor,
                         navController = navController,
-                        character = cast.character
+                        character = cast.character,
+                        isDetailPage = true
                     )
                 }
             }
