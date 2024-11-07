@@ -39,6 +39,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import kotlinx.serialization.Serializable
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Serializable
 class Acteurs
@@ -136,9 +138,6 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
         item {
             biographie(actor)
         }
-        item {
-            knownFor(actor)
-        }
     }
 
 }
@@ -162,8 +161,15 @@ fun infoActeur(actor: Actor) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
+        val formattedDate = try {
+            val date = dateFormat.parse(actor.birthday)
+            SimpleDateFormat("d MMMM yyyy", Locale.FRENCH).format(date)
+        } catch (e: Exception) {
+            actor.birthday
+        }
         Text(
-            text = "Date de naissance : ${actor.birthday}",
+            text = "Date de naissance : $formattedDate",
             fontSize = 15.sp,
             color = MaterialTheme.colorScheme.primary,
         )
@@ -178,20 +184,17 @@ fun infoActeur(actor: Actor) {
 @Composable
 fun biographie(actor: Actor){
     Text(
-        text = "Biographie : ${actor.biography}",
-        fontSize = 15.sp,
-        color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(top = 10.dp)
+        text = "Biographie",
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
     )
-}
-
-@Composable
-fun knownFor(actor: Actor){
     Text(
-        text = "Films : ${actor.also_known_as}",
+        text = actor.biography.ifEmpty { "Aucune biographie disponible." },
         fontSize = 15.sp,
         color = MaterialTheme.colorScheme.primary,
-        modifier = Modifier.padding(top = 10.dp)
+        modifier = Modifier.padding(start = 15.dp, top = 10.dp),
+        textAlign = TextAlign.Justify
     )
 }
 

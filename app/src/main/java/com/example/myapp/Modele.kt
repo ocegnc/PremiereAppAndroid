@@ -60,7 +60,7 @@ data class Tv(
 data class Serie(
     val adult: Boolean = false,
     val backdrop_path: String = "",
-    val created_by: List<Any> = listOf(),
+    val created_by: List<CreatedBy> = listOf(),
     val episode_run_time: List<Int> = listOf(),
     val first_air_date: String = "",
     val genres: List<Genre> = listOf(),
@@ -121,6 +121,15 @@ data class ProductionCompany(
     val logo_path: String = "",
     val name: String = "",
     val origin_country: String = ""
+)
+
+data class CreatedBy(
+    val id: Int = 0,
+    val credit_id: String,
+    val name: String = "",
+    val original_name: String = "",
+    val gender: Int = 0,
+    val profile_path: String = "",
 )
 
 data class ProductionCountry(

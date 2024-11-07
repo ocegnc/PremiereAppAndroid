@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -128,14 +129,13 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
         }
     }
 
-//    val date = movie.release_date
-//    val newDate = SimpleDateFormat("dd MMM yyyy")
-//    if (date== android.text.format.DateFormat("yyyy-MM-dd") {
-//            date = newDate
-//        }
-//    else{
-//    }
-
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE) 
+    val formattedDate = try {
+        val date = dateFormat.parse(movie.release_date)
+        SimpleDateFormat("d MMMM yyyy", Locale.FRENCH).format(date)
+    } catch (e: Exception) {
+        movie.release_date 
+    }
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -159,6 +159,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
+                Text(text = genreNames, fontStyle = FontStyle.Italic)
             }
         }
         item {
@@ -175,9 +176,16 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     modifier = Modifier
                         .size(200.dp)
                 )
-                Column {
-                    Text(text = movie.release_date)
-                    Text(text = genreNames, fontStyle = FontStyle.Italic)
+                Column(modifier = Modifier
+                    .padding(end = 10.dp)
+                    .fillMaxWidth()
+                ) {
+                    Text(text = "Sorti le $formattedDate")
+                    val director = movie.credits.crew.firstOrNull { it.job == "Director" }?.name ?: "Inconnu"
+                    Text(text = "Créé par $director")
+                    Text(text = "Durée : ${movie.runtime} min")
+                    val countries = movie.production_countries.joinToString(", ") { it.name }
+                    Text(text = "Pays de production : $countries")
                 }
             }
         }
@@ -188,13 +196,14 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Synopsis",
+                    text = "SYNOPSIS",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
                 )
                 Text(
-                    text = movie.overview,
+                    text = movie.overview.ifEmpty { "Aucun résumé disponible." },
+                    textAlign = TextAlign.Justify,
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
                 )
             }
@@ -202,7 +211,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
         item {
             Column {
                 Text(
-                    text = "A l'affiche ...",
+                    text = "CASTING",
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                 )
