@@ -36,6 +36,12 @@ class MainViewModel(): ViewModel() {
         }
     }
 
+    fun searchMovie(query: String) {
+        viewModelScope.launch {
+            movies.value = retrofit.searchMovie(apikey, query)
+        }
+    }
+
     fun getTv(){
         viewModelScope.launch {
             tv.value = retrofit.getTvList(apikey,"fr")
@@ -48,6 +54,12 @@ class MainViewModel(): ViewModel() {
         }
     }
 
+    fun searchSerie(query: String) {
+        viewModelScope.launch {
+            tv.value = retrofit.searchSerie(apikey, query)
+        }
+    }
+
     fun getActors(){
         viewModelScope.launch {
             actors.value = retrofit.getActorList(apikey,"fr")
@@ -57,6 +69,12 @@ class MainViewModel(): ViewModel() {
     fun getActorDetails(id : String){
         viewModelScope.launch {
             actor.value = retrofit.getActorDetails(id,apikey,"fr")
+        }
+    }
+
+    fun searchActor(query: String) {
+        viewModelScope.launch {
+            actors.value = retrofit.searchActor(apikey, query)
         }
     }
 

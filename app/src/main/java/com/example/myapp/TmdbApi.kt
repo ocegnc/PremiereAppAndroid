@@ -22,4 +22,13 @@ interface TmdbApi {
 
     @GET("person/{id}?append_to_response=credits")
     suspend fun getActorDetails(@Path("id") id: String, @Query("api_key") apiKey : String,@Query("language")language : String): Actor
+
+    @GET("search/movie")
+    suspend fun searchMovie(@Query("api_key") apikey : String, @Query("query") query: String): MovieList
+
+    @GET("search/tv")
+    suspend fun searchSerie(@Query("api_key") apikey : String, @Query("query") query: String): Tv
+
+    @GET("search/person")
+    suspend fun searchActor(@Query("api_key") apikey : String, @Query("query") query: String): ActorList
 }

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
@@ -46,13 +47,33 @@ import kotlinx.serialization.Serializable
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.DockedSearchBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Serializable
 class DetailsMovie(val movieId: String)
@@ -71,6 +92,9 @@ fun Screen(viewModel: MainViewModel) {
     val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
+        topBar = {
+            SearchBar(navController)
+        },
         bottomBar = {
             BottomAppBar(containerColor = Color(0xFF008080), contentColor = Color.Black) {
                 NavigationBarItem(
@@ -152,6 +176,90 @@ fun getNavigationBarItemColors(isSelected: Boolean): NavigationBarItemColors {
         unselectedTextColor = Color.Black,
         selectedTextColor = Color.Black
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBar(navController: NavController) {
+    val mainViewModel: MainViewModel = viewModel()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    var query by remember { mutableStateOf("") }
+    var searchVisible by remember { mutableStateOf(false) }
+    val currentDestination = navBackStackEntry?.destination
+
+    if (!searchVisible) {
+        TopAppBar(
+            title = {
+                Text(
+                    text = "Allo Cinosh'",
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Center
+                )
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color.White
+                    )
+                }
+            },
+            actions = {
+                IconButton(onClick = { searchVisible = true }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = Color.White
+                    )
+                }
+            }
+        )
+    } else {
+            OutlinedTextField(
+                value = query,
+                onValueChange = { query = it },
+                label = { Text("Rechercher") },
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        when (currentDestination?.route) {
+                            "films" -> mainViewModel.searchMovie(query)
+                            "series" -> mainViewModel.searchSerie(query)
+                            "actors" -> mainViewModel.searchActor(query)
+                        }
+                        searchVisible = false
+                    }
+                ),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .width(200.dp),
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color(0xFF008080),
+                    titleContentColor = Color.Black,
+                    actionIconContentColor = Color.Black
+                ),
+                        IconButton (onClick = { query = ""
+                }) {
+                    Icon(
+                        Icons.Filled.Search,
+                        contentDescription = "Search",
+                        tint = Color.White
+                    )
+                },
+                        IconButton (onClick = { query = "" }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = "Clear",
+                        tint = Color.White
+                    )
+                }
+
+            )
+    }
+
 }
 
 

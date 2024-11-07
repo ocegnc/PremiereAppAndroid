@@ -46,9 +46,22 @@ import java.util.Locale
 class Acteurs
 
 @Composable
-fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
+fun ActeursScreen(viewModel: MainViewModel, navController: NavController, searchQuery: String){
     val viewModel : MainViewModel = viewModel
     val actors by viewModel.actors.collectAsState()
+
+    if(searchQuery != "")
+    {
+        LaunchedEffect(key1 = true){
+            viewModel.searchActor(searchQuery)
+        }
+    }
+    else
+    {
+        LaunchedEffect(key1 = true) {
+            viewModel.getActors()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Surface(
@@ -63,9 +76,6 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
                     .align(Alignment.Center),
                 contentScale = ContentScale.Crop
             )
-        }
-        LaunchedEffect(key1 = true) {
-            viewModel.getActors()
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -120,7 +130,7 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
             Text(
                 text = (actor.name),
                 fontSize = 30.sp,
-                color = MaterialTheme.colorScheme.primary,
+                color = Color.Black,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center)
         }
@@ -171,12 +181,12 @@ fun infoActeur(actor: Actor) {
         Text(
             text = "Date de naissance : $formattedDate",
             fontSize = 15.sp,
-            color = MaterialTheme.colorScheme.primary,
+            color = Color.Black,
         )
         Text(
             text = "Lieu de naissance : ${actor.place_of_birth}",
             fontSize = 15.sp,
-            color = MaterialTheme.colorScheme.primary
+            color = Color.Black,
         )
     }
 }
@@ -187,12 +197,13 @@ fun biographie(actor: Actor){
         text = "Biographie",
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
-    )
+        modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp),
+        color = Color.Black,
+        )
     Text(
         text = actor.biography.ifEmpty { "Aucune biographie disponible." },
         fontSize = 15.sp,
-        color = MaterialTheme.colorScheme.primary,
+        color = Color.Black,
         modifier = Modifier.padding(start = 15.dp, top = 10.dp),
         textAlign = TextAlign.Justify
     )

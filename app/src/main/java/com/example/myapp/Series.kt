@@ -47,9 +47,22 @@ import java.util.Locale
 class Series
 
 @Composable
-fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
+fun SeriesScreen(viewModel: MainViewModel, navController: NavController, searchQuery: String){
     val viewModel : MainViewModel = viewModel
     val tv by viewModel.tv.collectAsState()
+
+    if(searchQuery != "")
+    {
+        LaunchedEffect(key1 = true){
+            viewModel.searchSerie(searchQuery)
+        }
+    }
+    else
+    {
+        LaunchedEffect(key1 = true) {
+            viewModel.getTv()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Surface(
@@ -65,9 +78,7 @@ fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
                 contentScale = ContentScale.Crop
             )
         }
-        LaunchedEffect(key1 = true) {
-            viewModel.getTv()
-        }
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
@@ -148,7 +159,7 @@ fun Titre(serie : Serie){
         Text(
             text = (serie.name),
             fontSize = 30.sp,
-            color = MaterialTheme.colorScheme.primary,
+            color = Color.Black,
             fontWeight = FontWeight.Bold
         )
         Text(text = genreNames, fontStyle = FontStyle.Italic)

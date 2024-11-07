@@ -55,9 +55,22 @@ import java.util.Locale
 class Films
 
 @Composable
-fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
+fun FilmsScreen(viewModel: MainViewModel, navController: NavController, searchQuery : String){
     val viewModel : MainViewModel = viewModel()
     val movies by viewModel.movies.collectAsState()
+
+    if(searchQuery != "")
+    {
+        LaunchedEffect(key1 = true){
+            viewModel.searchMovie(searchQuery)
+        }
+    }
+    else
+    {
+        LaunchedEffect(key1 = true) {
+            viewModel.getMovies()
+        }
+    }
 
     Box(modifier = Modifier.fillMaxWidth()) {
         Surface(
@@ -72,9 +85,6 @@ fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
                     .align(Alignment.Center),
                 contentScale = ContentScale.Crop
             )
-        }
-        LaunchedEffect(key1 = true) {
-            viewModel.getMovies()
         }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -121,6 +131,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
         viewModel.getMovieDetails(movieId)
     }
 
+
     var genreNames = ""
     for ((index, genre) in movie.genres.withIndex()) {
         genreNames += genre.name
@@ -156,7 +167,7 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
                 Text(
                     text = (movie.original_title),
                     fontSize = 30.sp,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )
                 Text(text = genreNames, fontStyle = FontStyle.Italic)
