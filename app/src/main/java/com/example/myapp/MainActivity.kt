@@ -259,6 +259,7 @@ fun getNavigationBarItemColors(isSelected: Boolean): NavigationBarItemColors {
     )
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(navController: NavController, searchBar: Boolean) {
