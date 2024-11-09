@@ -47,21 +47,11 @@ import java.util.Locale
 class Series
 
 @Composable
-fun SeriesScreen(viewModel: MainViewModel, navController: NavController, searchQuery: String){
-    val viewModel : MainViewModel = viewModel
+fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
     val tv by viewModel.tv.collectAsState()
 
-    if(searchQuery != "")
-    {
-        LaunchedEffect(key1 = true){
-            viewModel.searchSerie(searchQuery)
-        }
-    }
-    else
-    {
-        LaunchedEffect(key1 = true) {
-            viewModel.getTv()
-        }
+    LaunchedEffect(key1 = true){
+        viewModel.getTv()
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {

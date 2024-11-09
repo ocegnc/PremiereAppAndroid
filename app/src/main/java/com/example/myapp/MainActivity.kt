@@ -70,7 +70,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -84,16 +86,95 @@ class DetailsSerie(val serieId: String)
 @Serializable
 class DetailsActor(val actorId: String)
 
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val viewmodel : MainViewModel by viewModels()
+
+        enableEdgeToEdge()
+        setContent {
+            MyAppTheme {
+                Screen(viewmodel)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Screen(viewModel: MainViewModel) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
+    var text by remember { mutableStateOf("") }
+    var search by remember { mutableStateOf(false) }
+    var searchBar = true
 
     Scaffold(
-        topBar = {
-            SearchBar(navController)
+        topBar = { if (currentDestination?.hasRoute<Profil>() != true) {
+            TopAppBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                ,
+                title = { Text(text = "AlloCinosh'",
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                ) },
+                actions = {
+                    if (searchBar) {
+                        DockedSearchBar(
+                            query = text,
+                            onQueryChange = {text = it},
+                            onSearch = { search = false;
+                                if (currentDestination?.hasRoute<Films>() == true){
+                                    viewModel.searchMovie(it)
+                                }
+                                if (currentDestination?.hasRoute<Series>() == true){
+                                    viewModel.searchMovie(it)
+                                }
+                                if (currentDestination?.hasRoute<Acteurs>() == true){
+                                    viewModel.searchMovie(it)
+                                }
+                            },
+                            active = search,
+                            onActiveChange = {
+                                search = it
+                            },
+                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") },
+                            trailingIcon = { IconButton(onClick = {
+                                text = "";
+                                if (currentDestination?.hasRoute<Films>() == true){
+                                    viewModel.getMovies()
+                                }
+                                if (currentDestination?.hasRoute<Series>() == true){
+                                    viewModel.getTv()
+                                }
+                                if (currentDestination?.hasRoute<Acteurs>() == true){
+                                    viewModel.getActors()
+                                }}) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = "Clear",
+                                    tint = Color.Black
+                                )
+                            } },
+                            modifier = Modifier
+                                .width(250.dp)
+                                .height(50.dp)
+                        )
+                        {
+                        }
+                    }
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = Color(0xFF008080),
+                    titleContentColor = Color.Black
+                )
+            )
+        }
         },
         bottomBar = {
             BottomAppBar(containerColor = Color(0xFF008080), contentColor = Color.Black) {
@@ -180,104 +261,127 @@ fun getNavigationBarItemColors(isSelected: Boolean): NavigationBarItemColors {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(navController: NavController) {
+fun SearchBar(navController: NavController, searchBar: Boolean) {
     val mainViewModel: MainViewModel = viewModel()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     var query by remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
     var searchVisible by remember { mutableStateOf(false) }
     val currentDestination = navBackStackEntry?.destination
 
-    if (!searchVisible) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Allo Cinosh'",
-                    style = MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Center
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color.White
-                    )
-                }
-            },
-            actions = {
-                IconButton(onClick = { searchVisible = true }) {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = Color.White
-                    )
-                }
-            }
-        )
-    } else {
-            OutlinedTextField(
-                value = query,
-                onValueChange = { query = it },
-                label = { Text("Rechercher") },
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        when (currentDestination?.route) {
-                            "films" -> mainViewModel.searchMovie(query)
-                            "series" -> mainViewModel.searchSerie(query)
-                            "actors" -> mainViewModel.searchActor(query)
-                        }
-                        searchVisible = false
-                    }
-                ),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .width(200.dp),
-                colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color(0xFF008080),
-                    titleContentColor = Color.Black,
-                    actionIconContentColor = Color.Black
-                ),
-                        IconButton (onClick = { query = ""
-                }) {
-                    Icon(
-                        Icons.Filled.Search,
-                        contentDescription = "Search",
-                        tint = Color.White
-                    )
-                },
-                        IconButton (onClick = { query = "" }) {
-                    Icon(
-                        imageVector = Icons.Default.Clear,
-                        contentDescription = "Clear",
-                        tint = Color.White
-                    )
-                }
+//    TopAppBar(
+//        title = { Text(text = "Le super site de Loïs", fontSize = 15.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 10.dp, start = when(windowSizeClass.widthSizeClass){ WindowWidthSizeClass.Compact -> 10.dp else -> 100.dp} )) },
+//        actions = {
+//            if (searchBar) {
+//                DockedSearchBar(
+//                    query = query,
+//                    onQueryChange = {query = it},
+//                    onSearch = { searchVisible = false; searchQuery = it },
+//                    active = searchVisible,
+//                    onActiveChange = {
+//                        searchVisible = it
+//                    },
+//                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") },
+//                    modifier = Modifier
+//                        .width(
+//                            when (windowSizeClass.widthSizeClass) {
+//                                WindowWidthSizeClass.Compact -> 200.dp
+//                                else -> 400.dp
+//                            }
+//                        )
+//                        .height(45.dp)
+//                )
+//                {
+//                }
+//            }
+//        },
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .height(50.dp),
+//        colors = TopAppBarDefaults.mediumTopAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.primaryContainer,
+//            titleContentColor = MaterialTheme.colorScheme.primary
+//        )
+//    )
 
-            )
-    }
+//    if (!searchVisible) {
+//        TopAppBar(
+//            title = {
+//                Text(
+//                    text = "Allo Cinosh'",
+//                    style = MaterialTheme.typography.headlineSmall,
+//                    textAlign = TextAlign.Center
+//                )
+//            },
+//            navigationIcon = {
+//                IconButton(onClick = { navController.popBackStack() }) {
+//                    Icon(
+//                        imageVector = Icons.Default.ArrowBack,
+//                        contentDescription = "Back",
+//                        tint = Color.White
+//                    )
+//                }
+//            },
+//            actions = {
+//                IconButton(onClick = { searchVisible = true }) {
+//                    Icon(
+//                        imageVector = Icons.Default.Search,
+//                        contentDescription = "Search",
+//                        tint = Color.White
+//                    )
+//                }
+//            }
+//        )
+//    } else {
+//            OutlinedTextField(
+//                value = query,
+//                onValueChange = { query = it },
+//                label = { Text("Rechercher") },
+//                keyboardOptions = KeyboardOptions.Default.copy(
+//                    imeAction = ImeAction.Search
+//                ),
+//                keyboardActions = KeyboardActions(
+//                    onSearch = {
+//                        when (currentDestination?.route) {
+//                            "films" -> mainViewModel.searchMovie(query)
+//                            "series" -> mainViewModel.searchSerie(query)
+//                            "actors" -> mainViewModel.searchActor(query)
+//                        }
+//                        searchVisible = false
+//                    }
+//                ),
+//                modifier = Modifier
+//                    .padding(8.dp)
+//                    .width(200.dp),
+//                colors = TopAppBarDefaults.smallTopAppBarColors(
+//                    containerColor = Color(0xFF008080),
+//                    titleContentColor = Color.Black,
+//                    actionIconContentColor = Color.Black
+//                ),
+//                        IconButton (onClick = { query = ""
+//                }) {
+//                    Icon(
+//                        Icons.Filled.Search,
+//                        contentDescription = "Search",
+//                        tint = Color.White
+//                    )
+//                },
+//                        IconButton (onClick = { query = "" }) {
+//                    Icon(
+//                        imageVector = Icons.Default.Clear,
+//                        contentDescription = "Clear",
+//                        tint = Color.White
+//                    )
+//                }
+//
+//            )
+//    }
 
 }
 
 
 
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        val viewmodel : MainViewModel by viewModels()
-
-        enableEdgeToEdge()
-        setContent {
-            MyAppTheme {
-                Screen(viewmodel)
-            }
-        }
-    }
-}
 
 
 

@@ -55,21 +55,11 @@ import java.util.Locale
 class Films
 
 @Composable
-fun FilmsScreen(viewModel: MainViewModel, navController: NavController, searchQuery : String){
-    val viewModel : MainViewModel = viewModel()
+fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
     val movies by viewModel.movies.collectAsState()
 
-    if(searchQuery != "")
-    {
-        LaunchedEffect(key1 = true){
-            viewModel.searchMovie(searchQuery)
-        }
-    }
-    else
-    {
-        LaunchedEffect(key1 = true) {
-            viewModel.getMovies()
-        }
+    LaunchedEffect(key1 = true){
+        viewModel.getMovies()
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {

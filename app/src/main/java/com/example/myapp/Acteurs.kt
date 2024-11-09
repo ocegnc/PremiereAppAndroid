@@ -46,21 +46,11 @@ import java.util.Locale
 class Acteurs
 
 @Composable
-fun ActeursScreen(viewModel: MainViewModel, navController: NavController, searchQuery: String){
-    val viewModel : MainViewModel = viewModel
+fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
     val actors by viewModel.actors.collectAsState()
 
-    if(searchQuery != "")
-    {
-        LaunchedEffect(key1 = true){
-            viewModel.searchActor(searchQuery)
-        }
-    }
-    else
-    {
-        LaunchedEffect(key1 = true) {
-            viewModel.getActors()
-        }
+    LaunchedEffect(key1 = true) {
+        viewModel.getActors()
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {
