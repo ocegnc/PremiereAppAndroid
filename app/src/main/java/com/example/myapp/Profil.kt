@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,11 +34,11 @@ import kotlinx.serialization.Serializable
 class Profil
 
 @Composable
-fun ProfilScreen(classes: WindowSizeClass) {
-    val classeHauteur = classes.windowHeightSizeClass
-    val classeLargeur = classes.windowWidthSizeClass
-    when (classeLargeur) {
-        WindowWidthSizeClass.COMPACT -> /* largeur faible */ {
+fun ProfilScreen() {
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
+    when(windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -61,23 +62,21 @@ fun ProfilScreen(classes: WindowSizeClass) {
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Column(
-                    modifier= Modifier.padding(16.dp),
+                    modifier = Modifier.padding(start=50.dp, end = 50.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    MonImage(id = R.drawable.nuit_etoilee)
-                    Spacer(modifier = Modifier.height(10.dp))
+                    MonImage(id = R.drawable.portrait)
+                }
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
                     Name()
                     Spacer(modifier = Modifier.height(20.dp))
                     MonTexte()
-                }
-                Column(
-                    modifier= Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    LogosText()
                     Spacer(modifier = Modifier.height(40.dp))
+                    LogosText()
                 }
             }
         }
@@ -86,14 +85,27 @@ fun ProfilScreen(classes: WindowSizeClass) {
 
 @Composable
 fun MonImage(id: Int) {
-    Image(
-        painterResource(id),
-        contentDescription = "nuit étoilée",
-        contentScale = ContentScale.Crop,
-        modifier = Modifier
-            .size(150.dp)
-            .clip(CircleShape)
-    )
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+    val imageSize : Int
+
+    imageSize = when(windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            150
+        }
+        else -> {
+            300
+        }
+    }
+
+        Image(
+            painterResource(id),
+            contentDescription = "nuit étoilée",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(imageSize.dp)
+                .clip(CircleShape)
+        )
+
 }
 
 @Composable

@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,6 +25,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -49,6 +55,7 @@ class Series
 @Composable
 fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
     val tv by viewModel.tv.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     LaunchedEffect(key1 = true){
         viewModel.getTv()
@@ -68,15 +75,29 @@ fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
                 contentScale = ContentScale.Crop
             )
         }
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 20.dp, end = 20.dp)
-        ) {
-            items(tv.results) { serie ->
-                TvItem(serie = serie, navController = navController)
+        when(windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    items(tv.results) { serie ->
+                        TvItem(serie = serie, navController = navController)
+                    }
+                }
+            } else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    items(tv.results) { serie ->
+                        TvItem(serie = serie, navController = navController)
+                    }
+                }
             }
         }
     }
@@ -85,6 +106,7 @@ fun SeriesScreen(viewModel: MainViewModel, navController: NavController){
 
 @Composable
 fun TvItem(serie: Serie, navController: NavController) {
+
     Card(
         onClick = { navController.navigate("serieDetail/${serie.id}") },
         modifier = Modifier.padding(8.dp),
@@ -109,20 +131,61 @@ fun TvItem(serie: Serie, navController: NavController) {
 fun DetailsSerie(viewModel: MainViewModel, navController: NavController, serieId: String) {
     val viewModel: MainViewModel = viewModel()
     val serie by viewModel.serie.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     LaunchedEffect(key1 = true) {
         viewModel.getSerieDetails(serieId)
     }
 
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(bottom = 80.dp)
-    ){
-        item{ Titre(serie) }
-        item{ InfoSerie(serie) }
-        item { Synopsis(serie) }
-        item { Casting(serie, navController) }
+    when(windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item { Photo(serie) }
+                item { Titre(serie) }
+                item { InfoSerie(serie) }
+                item { Synopsis(serie) }
+                item { Casting(serie, navController) }
+            }
+        }else ->{
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+                .fillMaxHeight()
+        ) {
+            item {
+                Spacer(modifier = Modifier.padding(top = 10.dp))
+                Titre(serie)
+                Spacer(modifier = Modifier.padding(top = 10.dp))
+            }
+            item {
+                Row(modifier = Modifier
+                    .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically)
+                {
+                    InfoSerie(serie)
+                    Photo(serie)
+                }
+            }
+            item { Synopsis(serie) }
+            item { Casting(serie, navController) }
+        }
+        }
     }
+}
+
+@Composable
+fun Photo(serie: Serie){
+    AsyncImage(
+        model = "https://image.tmdb.org/t/p/w780${serie.backdrop_path}",
+        contentDescription = "Image serie ${serie.name}",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp)
+    )
 }
 
 @Composable
@@ -134,34 +197,20 @@ fun Titre(serie : Serie){
             genreNames += " & "
         }
     }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w780${serie.backdrop_path}",
-            contentDescription = "Image serie ${serie.name}",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp)
-        )
         Text(
             text = (serie.name),
             fontSize = 30.sp,
             color = Color.Black,
             fontWeight = FontWeight.Bold
         )
-        Text(text = genreNames, fontStyle = FontStyle.Italic)
-    }
+        Text(text = genreNames, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
 }
 
 @Composable
 fun InfoSerie(serie: Serie) {
     Row(
         modifier = Modifier
-            .padding(top = 10.dp)
-            .fillMaxWidth(),
+            .padding(top = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -173,7 +222,6 @@ fun InfoSerie(serie: Serie) {
         )
         Column(modifier = Modifier
             .padding(end = 10.dp)
-            .fillMaxWidth()
         ) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
             val formattedDate = try {
@@ -222,8 +270,8 @@ fun Casting(serie: Serie, navController: NavController){
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
         )
-    }
-    LazyRow {
+
+    LazyRow() {
         items(serie.credits.cast.take(15)) { cast ->
             val actor = castToActor(cast)
             ActorItem(
@@ -233,6 +281,7 @@ fun Casting(serie: Serie, navController: NavController){
                 isDetailPage = true
             )
         }
+    }
     }
 }
 

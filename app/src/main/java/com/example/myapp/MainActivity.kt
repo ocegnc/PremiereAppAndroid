@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -59,6 +60,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.NavigationRail
+import androidx.compose.material3.NavigationRailItem
+import androidx.compose.material3.NavigationRailItemColors
+import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
@@ -112,6 +117,17 @@ fun Screen(viewModel: MainViewModel) {
     var search by remember { mutableStateOf(false) }
     var searchBar = true
 
+    val searchSize : Int
+
+    searchSize = when(windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            250
+        }
+        else -> {
+            750
+        }
+    }
+
     Scaffold(
         topBar = { if (currentDestination?.hasRoute<Profil>() != true) {
             TopAppBar(
@@ -121,7 +137,7 @@ fun Screen(viewModel: MainViewModel) {
                 title = { Text(text = "AlloCinosh'",
                     fontSize = 25.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
+                   // modifier = Modifier.fillMaxWidth(0.3f)
                 ) },
                 actions = {
                     if (searchBar) {
@@ -133,10 +149,10 @@ fun Screen(viewModel: MainViewModel) {
                                     viewModel.searchMovie(it)
                                 }
                                 if (currentDestination?.hasRoute<Series>() == true){
-                                    viewModel.searchMovie(it)
+                                    viewModel.searchSerie(it)
                                 }
                                 if (currentDestination?.hasRoute<Acteurs>() == true){
-                                    viewModel.searchMovie(it)
+                                    viewModel.searchActor(it)
                                 }
                             },
                             active = search,
@@ -162,8 +178,8 @@ fun Screen(viewModel: MainViewModel) {
                                 )
                             } },
                             modifier = Modifier
-                                .width(250.dp)
                                 .height(50.dp)
+                                .width(searchSize.dp)
                         )
                         {
                         }
@@ -177,71 +193,150 @@ fun Screen(viewModel: MainViewModel) {
         }
         },
         bottomBar = {
-            BottomAppBar(containerColor = Color(0xFF008080), contentColor = Color.Black) {
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.AccountCircle , contentDescription = null)}, label = { Text("Mon profil") },
-                    selected = currentDestination?.hasRoute<Profil>() == true,
-                    onClick = { navController.navigate(Profil()) },
-                    colors = getNavigationBarItemColors(currentDestination?.hasRoute<Profil>() == true)
-                )
-                NavigationBarItem(
-                    icon = { Image( painterResource(R.drawable.baseline_movie_24) , contentDescription = null) }, label = { Text("Films") },
-                    selected = currentDestination?.hasRoute<Films>() == true,
-                    onClick = { navController.navigate(Films()) },
-                    colors = getNavigationBarItemColors(currentDestination?.hasRoute<Profil>() == true)
-                )
-                NavigationBarItem(
-                    icon = { Image( painterResource(R.drawable.baseline_tv_24) , contentDescription = null)}, label = { Text("Series") },
-                    selected = currentDestination?.hasRoute<Series>() == true,
-                    onClick = { navController.navigate(Series()) },
-                    colors = getNavigationBarItemColors(currentDestination?.hasRoute<Profil>() == true)
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Face , contentDescription = null)}, label = { Text("Acteurs") },
-                    selected = currentDestination?.hasRoute<Acteurs>() == true,
-                    onClick = { navController.navigate(Acteurs()) },
-                    colors = getNavigationBarItemColors(currentDestination?.hasRoute<Profil>() == true)
-                )
-                NavigationBarItem(
-                    icon = { Icon(Icons.Filled.Favorite , contentDescription = null)}, label = { Text("Favoris") },
-                    colors = getNavigationBarItemColors(currentDestination?.hasRoute<Profil>() == true),
-                    selected = currentDestination?.hasRoute<Favoris>() == true,
-                    onClick = { navController.navigate(Favoris()) })
+            when(windowSizeClass.windowWidthSizeClass) {
+                WindowWidthSizeClass.COMPACT -> {
+                    BottomAppBar(containerColor = Color(0xFF008080), contentColor = Color.Black, modifier = Modifier.padding(bottom = 0.dp)) {
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
+                            label = { Text("Mon profil") },
+                            selected = currentDestination?.hasRoute<Profil>() == true,
+                            onClick = { navController.navigate(Profil()) },
+                            colors = getNavigationBarItemColors(
+                                currentDestination?.hasRoute<Profil>() == true,
+                                Color(0xFF0ABAB5)
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = {
+                                Image(
+                                    painterResource(R.drawable.baseline_movie_24),
+                                    contentDescription = null
+                                )
+                            }, label = { Text("Films") },
+                            selected = currentDestination?.hasRoute<Films>() == true,
+                            onClick = { navController.navigate(Films()) },
+                            colors = getNavigationBarItemColors(
+                                currentDestination?.hasRoute<Films>() == true,
+                                Color.Yellow
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = {
+                                Image(
+                                    painterResource(R.drawable.baseline_tv_24),
+                                    contentDescription = null
+                                )
+                            }, label = { Text("Series") },
+                            selected = currentDestination?.hasRoute<Series>() == true,
+                            onClick = { navController.navigate(Series()) },
+                            colors = getNavigationBarItemColors(
+                                currentDestination?.hasRoute<Series>() == true,
+                                Color.Blue
+                            )
+                        )
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Filled.Face, contentDescription = null) },
+                            label = { Text("Acteurs") },
+                            selected = currentDestination?.hasRoute<Acteurs>() == true,
+                            onClick = { navController.navigate(Acteurs()) },
+                            colors = getNavigationBarItemColors(
+                                currentDestination?.hasRoute<Acteurs>() == true,
+                                Color.Green
+                            )
+                        )
+                    }
+                }
             }
         }
     )
 
     { innerPadding ->
-        NavHost(navController, startDestination = Profil(),
-            Modifier.padding(innerPadding)) {
-            composable<Profil> { ProfilScreen(windowSizeClass) }
-            composable<Favoris> { FavorisScreen() }
-            composable<Films> { FilmsScreen(viewModel, navController) }
-            composable<Series> { SeriesScreen(viewModel, navController) }
-            composable<Acteurs> { ActeursScreen(viewModel, navController) }
-            composable("movieDetail/{movieid}"){ backStackEntry ->
-                val movieId = backStackEntry.arguments?.getString("movieid") ?: ""
-                DetailsMovie(
-                    viewModel = viewModel,
-                    navController = navController,
-                    movieId = movieId,
-                )
+        Row {
+            Column(modifier = Modifier.background(Color(0xFF008080))) {
+                when(windowSizeClass.windowWidthSizeClass) {
+                    WindowWidthSizeClass.COMPACT -> {
+                    } else ->{
+                        Spacer(modifier = Modifier.height(60.dp))
+                NavigationRail(
+                    containerColor = Color(0xFF008080),
+                    contentColor = Color.Black,
+                ) {
+                    NavigationRailItem(
+                        icon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
+                        label = { Text("Mon profil") },
+                        selected = currentDestination?.hasRoute<Profil>() == true,
+                        onClick = { navController.navigate(Profil()) },
+                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Profil>() == true)
+                    )
+                    NavigationRailItem(
+                        icon = {
+                            Image(
+                                painterResource(R.drawable.baseline_movie_24),
+                                contentDescription = null
+                            )
+                        },
+                        label = { Text("Films") },
+                        selected = currentDestination?.hasRoute<Films>() == true,
+                        onClick = { navController.navigate(Films()) },
+                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Films>() == true)
+                    )
+                    NavigationRailItem(
+                        icon = {
+                            Image(
+                                painterResource(R.drawable.baseline_tv_24),
+                                contentDescription = null
+                            )
+                        },
+                        label = { Text("Series") },
+                        selected = currentDestination?.hasRoute<Series>() == true,
+                        onClick = { navController.navigate(Series()) },
+                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Series>() == true)
+                    )
+                    NavigationRailItem(
+                        icon = { Icon(Icons.Filled.Face, contentDescription = null) },
+                        label = { Text("Acteurs") },
+                        selected = currentDestination?.hasRoute<Acteurs>() == true,
+                        onClick = { navController.navigate(Acteurs()) },
+                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Acteurs>() == true)
+                    )
+                }
+}
             }
-            composable("serieDetail/{tvid}"){ backStackEntry ->
-                val serieId = backStackEntry.arguments?.getString("tvid") ?: ""
-                DetailsSerie(
-                    viewModel = viewModel,
-                    navController = navController,
-                    serieId = serieId,
-                )
             }
-            composable("actorDetail/{personid}"){ backStackEntry ->
-                val actorId = backStackEntry.arguments?.getString("personid") ?: ""
-                DetailsActor(
-                    viewModel = viewModel,
-                    navController = navController,
-                    actorId = actorId,
-                )
+            Column {
+                NavHost(
+                    navController, startDestination = Profil(),
+                    Modifier.padding(innerPadding)
+                ) {
+                    composable<Profil> { ProfilScreen() }
+                    composable<Films> { FilmsScreen(viewModel, navController) }
+                    composable<Series> { SeriesScreen(viewModel, navController) }
+                    composable<Acteurs> { ActeursScreen(viewModel, navController) }
+                    composable("movieDetail/{movieid}") { backStackEntry ->
+                        val movieId = backStackEntry.arguments?.getString("movieid") ?: ""
+                        DetailsMovie(
+                            viewModel = viewModel,
+                            navController = navController,
+                            movieId = movieId,
+                        )
+                    }
+                    composable("serieDetail/{tvid}") { backStackEntry ->
+                        val serieId = backStackEntry.arguments?.getString("tvid") ?: ""
+                        DetailsSerie(
+                            viewModel = viewModel,
+                            navController = navController,
+                            serieId = serieId,
+                        )
+                    }
+                    composable("actorDetail/{personid}") { backStackEntry ->
+                        val actorId = backStackEntry.arguments?.getString("personid") ?: ""
+                        DetailsActor(
+                            viewModel = viewModel,
+                            navController = navController,
+                            actorId = actorId,
+                        )
+                    }
+                }
             }
         }
     }
@@ -249,8 +344,19 @@ fun Screen(viewModel: MainViewModel) {
 
 
 @Composable
-fun getNavigationBarItemColors(isSelected: Boolean): NavigationBarItemColors {
+fun getNavigationBarItemColors(isSelected: Boolean, indicatorColor: Color): NavigationBarItemColors {
     return NavigationBarItemDefaults.colors(
+        selectedIconColor = Color.Black,
+        unselectedIconColor = Color.Black,
+        indicatorColor = indicatorColor,
+        unselectedTextColor = Color.Black,
+        selectedTextColor = Color.Black
+    )
+}
+
+@Composable
+fun getNavigationRailItemColors(isSelected: Boolean): NavigationRailItemColors {
+    return NavigationRailItemDefaults.colors(
         selectedIconColor = Color.Black,
         unselectedIconColor = Color.Black,
         indicatorColor = Color(0xFF0ABAB5),
@@ -259,126 +365,6 @@ fun getNavigationBarItemColors(isSelected: Boolean): NavigationBarItemColors {
     )
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBar(navController: NavController, searchBar: Boolean) {
-    val mainViewModel: MainViewModel = viewModel()
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var query by remember { mutableStateOf("") }
-    var searchQuery by remember { mutableStateOf("") }
-    var searchVisible by remember { mutableStateOf(false) }
-    val currentDestination = navBackStackEntry?.destination
-
-//    TopAppBar(
-//        title = { Text(text = "Le super site de Loïs", fontSize = 15.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 10.dp, start = when(windowSizeClass.widthSizeClass){ WindowWidthSizeClass.Compact -> 10.dp else -> 100.dp} )) },
-//        actions = {
-//            if (searchBar) {
-//                DockedSearchBar(
-//                    query = query,
-//                    onQueryChange = {query = it},
-//                    onSearch = { searchVisible = false; searchQuery = it },
-//                    active = searchVisible,
-//                    onActiveChange = {
-//                        searchVisible = it
-//                    },
-//                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "search") },
-//                    modifier = Modifier
-//                        .width(
-//                            when (windowSizeClass.widthSizeClass) {
-//                                WindowWidthSizeClass.Compact -> 200.dp
-//                                else -> 400.dp
-//                            }
-//                        )
-//                        .height(45.dp)
-//                )
-//                {
-//                }
-//            }
-//        },
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .height(50.dp),
-//        colors = TopAppBarDefaults.mediumTopAppBarColors(
-//            containerColor = MaterialTheme.colorScheme.primaryContainer,
-//            titleContentColor = MaterialTheme.colorScheme.primary
-//        )
-//    )
-
-//    if (!searchVisible) {
-//        TopAppBar(
-//            title = {
-//                Text(
-//                    text = "Allo Cinosh'",
-//                    style = MaterialTheme.typography.headlineSmall,
-//                    textAlign = TextAlign.Center
-//                )
-//            },
-//            navigationIcon = {
-//                IconButton(onClick = { navController.popBackStack() }) {
-//                    Icon(
-//                        imageVector = Icons.Default.ArrowBack,
-//                        contentDescription = "Back",
-//                        tint = Color.White
-//                    )
-//                }
-//            },
-//            actions = {
-//                IconButton(onClick = { searchVisible = true }) {
-//                    Icon(
-//                        imageVector = Icons.Default.Search,
-//                        contentDescription = "Search",
-//                        tint = Color.White
-//                    )
-//                }
-//            }
-//        )
-//    } else {
-//            OutlinedTextField(
-//                value = query,
-//                onValueChange = { query = it },
-//                label = { Text("Rechercher") },
-//                keyboardOptions = KeyboardOptions.Default.copy(
-//                    imeAction = ImeAction.Search
-//                ),
-//                keyboardActions = KeyboardActions(
-//                    onSearch = {
-//                        when (currentDestination?.route) {
-//                            "films" -> mainViewModel.searchMovie(query)
-//                            "series" -> mainViewModel.searchSerie(query)
-//                            "actors" -> mainViewModel.searchActor(query)
-//                        }
-//                        searchVisible = false
-//                    }
-//                ),
-//                modifier = Modifier
-//                    .padding(8.dp)
-//                    .width(200.dp),
-//                colors = TopAppBarDefaults.smallTopAppBarColors(
-//                    containerColor = Color(0xFF008080),
-//                    titleContentColor = Color.Black,
-//                    actionIconContentColor = Color.Black
-//                ),
-//                        IconButton (onClick = { query = ""
-//                }) {
-//                    Icon(
-//                        Icons.Filled.Search,
-//                        contentDescription = "Search",
-//                        tint = Color.White
-//                    )
-//                },
-//                        IconButton (onClick = { query = "" }) {
-//                    Icon(
-//                        imageVector = Icons.Default.Clear,
-//                        contentDescription = "Clear",
-//                        tint = Color.White
-//                    )
-//                }
-//
-//            )
-//    }
-
-}
 
 
 

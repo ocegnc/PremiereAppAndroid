@@ -121,7 +121,6 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
         viewModel.getMovieDetails(movieId)
     }
 
-
     var genreNames = ""
     for ((index, genre) in movie.genres.withIndex()) {
         genreNames += genre.name
@@ -140,7 +139,6 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(bottom = 80.dp)
     ) {
         item {
             Column(

@@ -20,6 +20,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import java.text.SimpleDateFormat
@@ -48,6 +50,8 @@ class Acteurs
 @Composable
 fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
     val actors by viewModel.actors.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+
 
     LaunchedEffect(key1 = true) {
         viewModel.getActors()
@@ -67,6 +71,8 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
                 contentScale = ContentScale.Crop
             )
         }
+        when(windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> {
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
@@ -76,6 +82,19 @@ fun ActeursScreen(viewModel: MainViewModel, navController: NavController){
             items(actors.results) { actor ->
                 ActorItem(actor = actor, navController = navController, "", false)
             }
+        }
+            } else -> {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                items(actors.results) { actor ->
+                    ActorItem(actor = actor, navController = navController, "", false)
+                }
+            }
+        }
         }
     }
 }
@@ -114,7 +133,7 @@ fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId
     }
 
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 60.dp, bottom = 80.dp)
+        modifier = Modifier.padding(top = 60.dp)
     ) {
         item{
             Text(
