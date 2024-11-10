@@ -262,26 +262,5 @@ fun Synopsis(serie: Serie) {
     }
 }
 
-@Composable
-fun Casting(serie: Serie, navController: NavController){
-    Column {
-        Text(
-            text = "CASTING",
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-        )
 
-    LazyRow() {
-        items(serie.credits.cast.take(15)) { cast ->
-            val actor = castToActor(cast)
-            ActorItem(
-                actor = actor,
-                navController = navController,
-                character = cast.character,
-                isDetailPage = true
-            )
-        }
-    }
-    }
-}
 

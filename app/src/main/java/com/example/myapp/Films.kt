@@ -28,6 +28,7 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -55,10 +57,11 @@ import java.util.Locale
 class Films
 
 @Composable
-fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
+fun FilmsScreen(viewModel: MainViewModel, navController: NavController) {
     val movies by viewModel.movies.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         viewModel.getMovies()
     }
 
@@ -76,14 +79,31 @@ fun FilmsScreen(viewModel: MainViewModel, navController: NavController){
                 contentScale = ContentScale.Crop
             )
         }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 20.dp, end = 20.dp)
-        ) {
-            items(movies.results) { movie ->
-                MovieItem(movie = movie, navController = navController)
+        when (windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    items(movies.results) { movie ->
+                        MovieItem(movie = movie, navController = navController)
+                    }
+                }
+            }
+
+            else -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(4),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    items(movies.results) { movie ->
+                        MovieItem(movie = movie, navController = navController)
+                    }
+                }
             }
         }
     }
