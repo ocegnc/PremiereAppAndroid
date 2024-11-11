@@ -118,7 +118,6 @@ fun Screen(viewModel: MainViewModel) {
     var searchBar = true
 
     val searchSize : Int
-
     searchSize = when(windowSizeClass.windowWidthSizeClass) {
         WindowWidthSizeClass.COMPACT -> {
             250
@@ -126,6 +125,14 @@ fun Screen(viewModel: MainViewModel) {
         else -> {
             750
         }
+    }
+
+    var colorBar = Color(0xFF008080)
+    if (currentDestination?.hasRoute<Series>() == true){
+        colorBar = Color(0xFFFFDF00)
+    }
+    if (currentDestination?.hasRoute<Acteurs>() == true){
+        colorBar = Color(0xFF22844E)
     }
 
     Scaffold(
@@ -186,7 +193,7 @@ fun Screen(viewModel: MainViewModel) {
                     }
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = Color(0xFF008080),
+                    containerColor = colorBar,
                     titleContentColor = Color.Black
                 )
             )
@@ -195,7 +202,7 @@ fun Screen(viewModel: MainViewModel) {
         bottomBar = {
             when(windowSizeClass.windowWidthSizeClass) {
                 WindowWidthSizeClass.COMPACT -> {
-                    BottomAppBar(containerColor = Color(0xFF008080), contentColor = Color.Black, modifier = Modifier.padding(bottom = 0.dp)) {
+                    BottomAppBar(containerColor = colorBar, contentColor = Color.Black, modifier = Modifier.padding(bottom = 0.dp)) {
                         NavigationBarItem(
                             icon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
                             label = { Text("Mon profil") },
@@ -217,7 +224,7 @@ fun Screen(viewModel: MainViewModel) {
                             onClick = { navController.navigate(Films()) },
                             colors = getNavigationBarItemColors(
                                 currentDestination?.hasRoute<Films>() == true,
-                                Color.Yellow
+                                Color(0xFF0ABAB5)
                             )
                         )
                         NavigationBarItem(
@@ -231,7 +238,7 @@ fun Screen(viewModel: MainViewModel) {
                             onClick = { navController.navigate(Series()) },
                             colors = getNavigationBarItemColors(
                                 currentDestination?.hasRoute<Series>() == true,
-                                Color.Blue
+                                Color(0xFFFFFF62)
                             )
                         )
                         NavigationBarItem(
@@ -241,7 +248,7 @@ fun Screen(viewModel: MainViewModel) {
                             onClick = { navController.navigate(Acteurs()) },
                             colors = getNavigationBarItemColors(
                                 currentDestination?.hasRoute<Acteurs>() == true,
-                                Color.Green
+                                Color(0xFF72BF67)
                             )
                         )
                     }

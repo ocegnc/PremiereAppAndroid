@@ -232,7 +232,7 @@ fun castToActor(cast: Cast): Actor {
 }
 
 @Composable
-fun Casting(serie: Serie, navController: NavController){
+fun Casting(castlist: List<Cast>, navController: NavController){
     Column {
         Text(
             text = "CASTING",
@@ -241,7 +241,7 @@ fun Casting(serie: Serie, navController: NavController){
         )
 
         LazyRow() {
-            items(serie.credits.cast.take(15)) { cast ->
+            items(castlist.take(15)) { cast ->
                 val actor = castToActor(cast)
                 ActorItem(
                     actor = actor,

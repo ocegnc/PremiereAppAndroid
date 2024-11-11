@@ -111,7 +111,7 @@ fun TvItem(serie: Serie, navController: NavController) {
         onClick = { navController.navigate("serieDetail/${serie.id}") },
         modifier = Modifier.padding(8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFFFDF00),
+            containerColor = Color(0xFFFFFF62),
             contentColor = Color.Black
         )
     ) {
@@ -146,7 +146,7 @@ fun DetailsSerie(viewModel: MainViewModel, navController: NavController, serieId
                 item { Titre(serie) }
                 item { InfoSerie(serie) }
                 item { Synopsis(serie) }
-                item { Casting(serie, navController) }
+                item { Casting(serie.credits.cast, navController) }
             }
         }else ->{
         LazyColumn(
@@ -170,7 +170,7 @@ fun DetailsSerie(viewModel: MainViewModel, navController: NavController, serieId
                 }
             }
             item { Synopsis(serie) }
-            item { Casting(serie, navController) }
+            item { Casting(serie.credits.cast, navController) }
         }
         }
     }

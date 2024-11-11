@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -136,11 +137,68 @@ fun MovieItem(movie: Movie, navController: NavController) {
 fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId: String) {
     val viewModel: MainViewModel = viewModel()
     val movie by viewModel.movie.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     LaunchedEffect(key1 = true) {
         viewModel.getMovieDetails(movieId)
     }
 
+    when (windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                item { Photo(movie) }
+                item { Titre(movie) }
+                item { InfoMovie(movie) }
+                item { Synopsis(movie) }
+                item { Casting(movie.credits.cast, navController) }
+            }
+        }else ->{
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                        .fillMaxHeight()
+                ) {
+                    item {
+                        Spacer(modifier = Modifier.padding(top = 10.dp))
+                        Titre(movie)
+                        Spacer(modifier = Modifier.padding(top = 10.dp))
+                    }
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        )
+                        {
+                            InfoMovie(movie)
+                            Photo(movie)
+                        }
+                    }
+                    item { Synopsis(movie) }
+                    item { Casting(movie.credits.cast, navController) }
+                }
+            }
+        }
+    }
+
+
+@Composable
+fun Photo(movie: Movie){
+    AsyncImage(
+        model = "https://image.tmdb.org/t/p/w780${movie.backdrop_path}",
+        contentDescription = "Image film ${movie.title}",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 15.dp)
+    )
+}
+
+@Composable
+fun Titre(movie: Movie){
     var genreNames = ""
     for ((index, genre) in movie.genres.withIndex()) {
         genreNames += genre.name
@@ -148,104 +206,70 @@ fun DetailsMovie(viewModel: MainViewModel, navController: NavController, movieId
             genreNames += " & "
         }
     }
+    Text(
+        text = (movie.original_title),
+        fontSize = 30.sp,
+        color = Color.Black,
+        fontWeight = FontWeight.Bold
+    )
+    Text(text = genreNames, fontStyle = FontStyle.Italic)
 
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE) 
-    val formattedDate = try {
-        val date = dateFormat.parse(movie.release_date)
-        SimpleDateFormat("d MMMM yyyy", Locale.FRENCH).format(date)
-    } catch (e: Exception) {
-        movie.release_date 
-    }
 
-    LazyColumn(
-        horizontalAlignment = Alignment.CenterHorizontally,
+}
+
+@Composable
+fun InfoMovie(movie: Movie){
+    Row(
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w780${movie.backdrop_path}",
-                    contentDescription = "Image film ${movie.title}",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 15.dp)
-                )
-                Text(
-                    text = (movie.original_title),
-                    fontSize = 30.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(text = genreNames, fontStyle = FontStyle.Italic)
+        AsyncImage(
+            model = "https://image.tmdb.org/t/p/w780${movie.poster_path}",
+            contentDescription = "Image film ${movie.title}",
+            modifier = Modifier
+                .size(200.dp)
+        )
+        Column(modifier = Modifier
+            .padding(end = 10.dp)
+            .fillMaxWidth()
+        ) {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
+            val formattedDate = try {
+                val date = dateFormat.parse(movie.release_date)
+                SimpleDateFormat("d MMMM yyyy", Locale.FRENCH).format(date)
+            } catch (e: Exception) {
+                movie.release_date
             }
+            Text(text = "Sorti le $formattedDate")
+            val director = movie.credits.crew.firstOrNull { it.job == "Director" }?.name ?: "Inconnu"
+            Text(text = "Créé par $director")
+            Text(text = "Durée : ${movie.runtime} min")
+            val countries = movie.production_countries.joinToString(", ") { it.name }
+            Text(text = "Pays de production : $countries")
         }
-        item {
-            Row(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AsyncImage(
-                    model = "https://image.tmdb.org/t/p/w780${movie.poster_path}",
-                    contentDescription = "Image film ${movie.title}",
-                    modifier = Modifier
-                        .size(200.dp)
-                )
-                Column(modifier = Modifier
-                    .padding(end = 10.dp)
-                    .fillMaxWidth()
-                ) {
-                    Text(text = "Sorti le $formattedDate")
-                    val director = movie.credits.crew.firstOrNull { it.job == "Director" }?.name ?: "Inconnu"
-                    Text(text = "Créé par $director")
-                    Text(text = "Durée : ${movie.runtime} min")
-                    val countries = movie.production_countries.joinToString(", ") { it.name }
-                    Text(text = "Pays de production : $countries")
-                }
-            }
-        }
-        item {
-            Column(
-                modifier = Modifier
-                    .padding(top = 10.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "SYNOPSIS",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
-                )
-                Text(
-                    text = movie.overview.ifEmpty { "Aucun résumé disponible." },
-                    textAlign = TextAlign.Justify,
-                    modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
-                )
-            }
-        }
-        item {
-            Column {
-                Text(
-                    text = "CASTING",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
-            }
-            LazyRow {
-                items(movie.credits.cast.take(15)) { cast ->
-                    val actor = castToActor(cast)
-                    ActorItem(
-                        actor = actor,
-                        navController = navController,
-                        character = cast.character,
-                        isDetailPage = true
-                    )
-                }
-            }
-        }
+    }
+}
+
+@Composable
+fun Synopsis(movie: Movie){
+    Column(
+        modifier = Modifier
+            .padding(top = 10.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = "SYNOPSIS",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
+        )
+        Text(
+            text = movie.overview.ifEmpty { "Aucun résumé disponible." },
+            textAlign = TextAlign.Justify,
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+        )
     }
 }
