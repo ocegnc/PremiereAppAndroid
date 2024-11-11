@@ -115,8 +115,9 @@ fun ActorItem(actor: Actor, navController: NavController, character : String, is
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(10.dp)) {
             AsyncImage(
                 model = "https://image.tmdb.org/t/p/w780${actor.profile_path}",
+                contentScale = ContentScale.Crop,
                 contentDescription = "Image film ${actor.name}",
-                if (isDetailPage){Modifier
+                modifier = if (isDetailPage){Modifier
                     .clip(CircleShape)
                     .size(100.dp)} else { Modifier.fillMaxWidth() }
             )
@@ -129,58 +130,95 @@ fun ActorItem(actor: Actor, navController: NavController, character : String, is
 fun DetailsActor(viewModel: MainViewModel, navController: NavController, actorId: String) {
     val viewModel: MainViewModel = viewModel()
     val actor by viewModel.actor.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     LaunchedEffect(key1 = true) {
         viewModel.getActorDetails(actorId)
     }
 
-    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(top = 60.dp)
-    ) {
-        item{
-            Text(
-                text = (actor.name),
-                fontSize = 30.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center)
-        }
-        item {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.Start
-            ){
-                photoActor(actor)
-                infoActeur(actor)
+    when(windowSizeClass.windowWidthSizeClass) {
+        WindowWidthSizeClass.COMPACT -> {
+            LazyColumn(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 60.dp)
+            ) {
+                item {
+                    Text(
+                        text = (actor.name),
+                        fontSize = 30.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                }
+                item {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        PhotoActor(actor)
+                        InfoActor(actor)
+                    }
+                }
+                item {
+                    Biographie(actor)
+                }
+            }
+        }else ->{
+        LazyColumn(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(top = 20.dp)
+        ) {
+            item {
+                Text(
+                    text = (actor.name),
+                    fontSize = 30.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
+                )
+            }
+            item {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    PhotoActor(actor)
+                    InfoActor(actor)
+                }
+            }
+            item {
+                Biographie(actor)
+            }
             }
         }
-        item {
-            biographie(actor)
-        }
     }
-
 }
 
 @Composable
-fun photoActor(actor: Actor){
+fun PhotoActor(actor: Actor){
+
         AsyncImage(
             model = "https://image.tmdb.org/t/p/w780${actor.profile_path}",
             contentDescription = "Image film ${actor.name}",
             modifier = Modifier
                 .size(200.dp)
-                .fillMaxSize()
+                .fillMaxWidth(0.4f)
         )
     }
 
 @Composable
-fun infoActeur(actor: Actor) {
+fun InfoActor(actor: Actor) {
     Column(modifier = Modifier
         .padding(16.dp)
-        .fillMaxSize(),
+        .fillMaxWidth(0.6f),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
         val formattedDate = try {
@@ -191,31 +229,31 @@ fun infoActeur(actor: Actor) {
         }
         Text(
             text = "Date de naissance : $formattedDate",
-            fontSize = 15.sp,
+            fontSize = 13.sp,
             color = Color.Black,
         )
         Text(
             text = "Lieu de naissance : ${actor.place_of_birth}",
-            fontSize = 15.sp,
+            fontSize = 13.sp,
             color = Color.Black,
         )
     }
 }
 
 @Composable
-fun biographie(actor: Actor){
+fun Biographie(actor: Actor){
     Text(
         text = "Biographie",
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp),
+        modifier = Modifier.padding(start = 10.dp, top = 20.dp),
         color = Color.Black,
         )
     Text(
         text = actor.biography.ifEmpty { "Aucune biographie disponible." },
         fontSize = 15.sp,
         color = Color.Black,
-        modifier = Modifier.padding(start = 15.dp, top = 10.dp),
+        modifier = Modifier.padding(start = 10.dp, top = 10.dp),
         textAlign = TextAlign.Justify
     )
 }

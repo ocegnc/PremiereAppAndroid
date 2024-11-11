@@ -221,8 +221,7 @@ fun Titre(movie: Movie){
 fun InfoMovie(movie: Movie){
     Row(
         modifier = Modifier
-            .padding(top = 10.dp)
-            .fillMaxWidth(),
+            .padding(top = 10.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -234,7 +233,6 @@ fun InfoMovie(movie: Movie){
         )
         Column(modifier = Modifier
             .padding(end = 10.dp)
-            .fillMaxWidth()
         ) {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.FRANCE)
             val formattedDate = try {

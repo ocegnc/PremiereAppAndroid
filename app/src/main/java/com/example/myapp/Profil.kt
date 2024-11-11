@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,11 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import kotlinx.serialization.Serializable
@@ -35,7 +39,7 @@ import kotlinx.serialization.Serializable
 class Profil
 
 @Composable
-fun ProfilScreen() {
+fun ProfilScreen(viewModel: MainViewModel, navController: NavController) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     when(windowSizeClass.windowWidthSizeClass) {
@@ -55,6 +59,7 @@ fun ProfilScreen() {
                 Spacer(modifier = Modifier.height(40.dp))
                 LogosText()
                 Spacer(modifier = Modifier.height(100.dp))
+                ButtonStart(navController)
             }
         }
         else -> {
@@ -78,6 +83,7 @@ fun ProfilScreen() {
                     MonTexte()
                     Spacer(modifier = Modifier.height(40.dp))
                     LogosText()
+                    ButtonStart(navController)
                 }
             }
         }
@@ -171,12 +177,13 @@ fun LogosText(){
     }
 }
 
-//@Composable
-//fun Button(navController: NavController){
-//    Button(
-//        onClick = { navController.navigate("movieList") },
-//        modifier = Modifier.padding(10.dp)
-//    ) {
-//        Text(text = "Démarrer")
-//    }
-//}
+@Composable
+fun ButtonStart(navController: NavController){
+    Button(
+        onClick = { navController.navigate(Films()) },
+        modifier = Modifier.padding(10.dp),
+        colors = ButtonColors(contentColor = Color.Black, containerColor = Color(0xFF008080), disabledContentColor = Color.Black, disabledContainerColor = Color.Black)
+    ) {
+        Text(text = "Démarrer")
+    }
+}

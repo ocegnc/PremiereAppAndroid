@@ -50,12 +50,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemColors
@@ -128,10 +132,10 @@ fun Screen(viewModel: MainViewModel) {
     }
 
     var colorBar = Color(0xFF008080)
-    if (currentDestination?.hasRoute<Series>() == true){
+    if (currentDestination?.hasRoute<Series>() == true || (currentDestination?.route=="serieDetail/{tvid}") == true){
         colorBar = Color(0xFFFFDF00)
     }
-    if (currentDestination?.hasRoute<Acteurs>() == true){
+    if (currentDestination?.hasRoute<Acteurs>() == true || (currentDestination?.route=="actorDetail/{personid}") == true){
         colorBar = Color(0xFF22844E)
     }
 
@@ -199,10 +203,14 @@ fun Screen(viewModel: MainViewModel) {
             )
         }
         },
-        bottomBar = {
-            when(windowSizeClass.windowWidthSizeClass) {
+        bottomBar = { if (currentDestination?.hasRoute<Profil>() != true) {
+            when (windowSizeClass.windowWidthSizeClass) {
                 WindowWidthSizeClass.COMPACT -> {
-                    BottomAppBar(containerColor = colorBar, contentColor = Color.Black, modifier = Modifier.padding(bottom = 0.dp)) {
+                    BottomAppBar(
+                        containerColor = colorBar,
+                        contentColor = Color.Black,
+                        modifier = Modifier.padding(bottom = 0.dp)
+                    ) {
                         NavigationBarItem(
                             icon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
                             label = { Text("Mon profil") },
@@ -255,6 +263,26 @@ fun Screen(viewModel: MainViewModel) {
                 }
             }
         }
+        },
+        floatingActionButton = {
+            if (currentDestination?.hasRoute<Profil>() != true) {
+                when (windowSizeClass.windowWidthSizeClass) {
+                    WindowWidthSizeClass.COMPACT -> {
+                        FloatingActionButton(
+                            onClick = { navController.navigateUp() },
+                            containerColor = colorBar,
+                            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ExitToApp,
+                                contentDescription = "Retour",
+                                tint = Color.Black
+                            )
+                        }
+                    }
+                }
+            }
+        },
     )
 
     { innerPadding ->
@@ -262,52 +290,78 @@ fun Screen(viewModel: MainViewModel) {
             Column(modifier = Modifier.background(Color(0xFF008080))) {
                 when(windowSizeClass.windowWidthSizeClass) {
                     WindowWidthSizeClass.COMPACT -> {
-                    } else ->{
+                    } else -> {
+                    if (currentDestination?.hasRoute<Profil>() != true) {
                         Spacer(modifier = Modifier.height(60.dp))
-                NavigationRail(
-                    containerColor = Color(0xFF008080),
-                    contentColor = Color.Black,
-                ) {
-                    NavigationRailItem(
-                        icon = { Icon(Icons.Filled.AccountCircle, contentDescription = null) },
-                        label = { Text("Mon profil") },
-                        selected = currentDestination?.hasRoute<Profil>() == true,
-                        onClick = { navController.navigate(Profil()) },
-                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Profil>() == true)
-                    )
-                    NavigationRailItem(
-                        icon = {
-                            Image(
-                                painterResource(R.drawable.baseline_movie_24),
-                                contentDescription = null
+                        NavigationRail(
+                            containerColor = colorBar,
+                            contentColor = Color.Black,
+                        ) {
+                            NavigationRailItem(
+                                icon = {
+                                    Icon(
+                                        Icons.Filled.AccountCircle,
+                                        contentDescription = null
+                                    )
+                                },
+                                label = { Text("Mon profil") },
+                                selected = currentDestination?.hasRoute<Profil>() == true,
+                                onClick = { navController.navigate(Profil()) },
+                                colors = getNavigationRailItemColors(
+                                    currentDestination?.hasRoute<Profil>() == true,
+                                    Color(0xFF0ABAB5)
+                                )
                             )
-                        },
-                        label = { Text("Films") },
-                        selected = currentDestination?.hasRoute<Films>() == true,
-                        onClick = { navController.navigate(Films()) },
-                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Films>() == true)
-                    )
-                    NavigationRailItem(
-                        icon = {
-                            Image(
-                                painterResource(R.drawable.baseline_tv_24),
-                                contentDescription = null
+                            NavigationRailItem(
+                                icon = {
+                                    Image(
+                                        painterResource(R.drawable.baseline_movie_24),
+                                        contentDescription = null
+                                    )
+                                },
+                                label = { Text("Films") },
+                                selected = currentDestination?.hasRoute<Films>() == true,
+                                onClick = { navController.navigate(Films()) },
+                                colors = getNavigationRailItemColors(
+                                    currentDestination?.hasRoute<Films>() == true,
+                                    Color(0xFF0ABAB5)
+                                )
                             )
-                        },
-                        label = { Text("Series") },
-                        selected = currentDestination?.hasRoute<Series>() == true,
-                        onClick = { navController.navigate(Series()) },
-                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Series>() == true)
-                    )
-                    NavigationRailItem(
-                        icon = { Icon(Icons.Filled.Face, contentDescription = null) },
-                        label = { Text("Acteurs") },
-                        selected = currentDestination?.hasRoute<Acteurs>() == true,
-                        onClick = { navController.navigate(Acteurs()) },
-                        colors = getNavigationRailItemColors(currentDestination?.hasRoute<Acteurs>() == true)
-                    )
+                            NavigationRailItem(
+                                icon = {
+                                    Image(
+                                        painterResource(R.drawable.baseline_tv_24),
+                                        contentDescription = null
+                                    )
+                                },
+                                label = { Text("Series") },
+                                selected = currentDestination?.hasRoute<Series>() == true,
+                                onClick = { navController.navigate(Series()) },
+                                colors = getNavigationRailItemColors(
+                                    currentDestination?.hasRoute<Series>() == true,
+                                    Color(0xFFFFFF62)
+                                )
+                            )
+                            NavigationRailItem(
+                                icon = { Icon(Icons.Filled.Face, contentDescription = null) },
+                                label = { Text("Acteurs") },
+                                selected = currentDestination?.hasRoute<Acteurs>() == true,
+                                onClick = { navController.navigate(Acteurs()) },
+                                colors = getNavigationRailItemColors(
+                                    currentDestination?.hasRoute<Acteurs>() == true,
+                                    Color(0xFF72BF67)
+                                )
+                            )
+                            NavigationRailItem(
+                                icon = { Icon(Icons.Filled.ExitToApp, contentDescription = null) },
+                                label = { Text("Retour") },
+                                selected = false,
+                                onClick = { navController.navigateUp() },
+                                colors = getNavigationRailItemColors( false, Color.Transparent)
+                            )
+                        }
+                    }
                 }
-}
             }
             }
             Column {
@@ -315,7 +369,7 @@ fun Screen(viewModel: MainViewModel) {
                     navController, startDestination = Profil(),
                     Modifier.padding(innerPadding)
                 ) {
-                    composable<Profil> { ProfilScreen() }
+                    composable<Profil> { ProfilScreen(viewModel, navController) }
                     composable<Films> { FilmsScreen(viewModel, navController) }
                     composable<Series> { SeriesScreen(viewModel, navController) }
                     composable<Acteurs> { ActeursScreen(viewModel, navController) }
@@ -362,11 +416,11 @@ fun getNavigationBarItemColors(isSelected: Boolean, indicatorColor: Color): Navi
 }
 
 @Composable
-fun getNavigationRailItemColors(isSelected: Boolean): NavigationRailItemColors {
+fun getNavigationRailItemColors(isSelected: Boolean, indicatorColor: Color): NavigationRailItemColors {
     return NavigationRailItemDefaults.colors(
         selectedIconColor = Color.Black,
         unselectedIconColor = Color.Black,
-        indicatorColor = Color(0xFF0ABAB5),
+        indicatorColor = indicatorColor,
         unselectedTextColor = Color.Black,
         selectedTextColor = Color.Black
     )
