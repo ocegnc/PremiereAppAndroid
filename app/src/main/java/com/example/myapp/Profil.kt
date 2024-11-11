@@ -26,6 +26,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.core.layout.WindowWidthSizeClass
 import kotlinx.serialization.Serializable
@@ -170,9 +171,12 @@ fun LogosText(){
     }
 }
 
-@Composable
-fun Button(){
-    androidx.compose.material3.Button(onClick = { /*TODO*/ }) {
-        Text(text = "Démarrer")
-    }
-}
+//@Composable
+//fun Button(navController: NavController){
+//    Button(
+//        onClick = { navController.navigate("movieList") },
+//        modifier = Modifier.padding(10.dp)
+//    ) {
+//        Text(text = "Démarrer")
+//    }
+//}
