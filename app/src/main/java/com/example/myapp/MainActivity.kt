@@ -203,6 +203,26 @@ fun Screen(viewModel: MainViewModel) {
             )
         }
         },
+
+        floatingActionButton = {
+            if (currentDestination?.hasRoute<Profil>() != true) {
+                when (windowSizeClass.windowWidthSizeClass) {
+                    WindowWidthSizeClass.COMPACT -> {
+                        FloatingActionButton(
+                            onClick = { navController.navigateUp() },
+                            containerColor = colorBar,
+                            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.ArrowBack,
+                                contentDescription = "Retour",
+                                tint = Color.Black
+                            )
+                        }
+                    }
+                }
+            }
+        },
         bottomBar = { if (currentDestination?.hasRoute<Profil>() != true) {
             when (windowSizeClass.windowWidthSizeClass) {
                 WindowWidthSizeClass.COMPACT -> {
@@ -263,26 +283,7 @@ fun Screen(viewModel: MainViewModel) {
                 }
             }
         }
-        },
-        floatingActionButton = {
-            if (currentDestination?.hasRoute<Profil>() != true) {
-                when (windowSizeClass.windowWidthSizeClass) {
-                    WindowWidthSizeClass.COMPACT -> {
-                        FloatingActionButton(
-                            onClick = { navController.navigateUp() },
-                            containerColor = colorBar,
-                            elevation = FloatingActionButtonDefaults.elevation(8.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.ExitToApp,
-                                contentDescription = "Retour",
-                                tint = Color.Black
-                            )
-                        }
-                    }
-                }
-            }
-        },
+        }
     )
 
     { innerPadding ->
@@ -353,7 +354,7 @@ fun Screen(viewModel: MainViewModel) {
                                 )
                             )
                             NavigationRailItem(
-                                icon = { Icon(Icons.Filled.ExitToApp, contentDescription = null) },
+                                icon = { Icon(Icons.Filled.ArrowBack, contentDescription = null) },
                                 label = { Text("Retour") },
                                 selected = false,
                                 onClick = { navController.navigateUp() },
