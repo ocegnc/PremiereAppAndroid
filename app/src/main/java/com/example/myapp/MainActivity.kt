@@ -279,6 +279,16 @@ fun Screen(viewModel: MainViewModel) {
                                 Color(0xFF72BF67)
                             )
                         )
+                        NavigationBarItem(
+                            icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                            label = { Text("Question1") },
+                            selected = currentDestination?.hasRoute<Question1>() == true,
+                            onClick = { navController.navigate(Question1()) },
+                            colors = getNavigationBarItemColors(
+                                currentDestination?.hasRoute<Question1>() == true,
+                                Color(0xFF72BF67)
+                            )
+                        )
                     }
                 }
             }
@@ -374,6 +384,7 @@ fun Screen(viewModel: MainViewModel) {
                     composable<Films> { FilmsScreen(viewModel, navController) }
                     composable<Series> { SeriesScreen(viewModel, navController) }
                     composable<Acteurs> { ActeursScreen(viewModel, navController) }
+                    composable<Question1> { Question1Screen(navController) }
                     composable("movieDetail/{movieid}") { backStackEntry ->
                         val movieId = backStackEntry.arguments?.getString("movieid") ?: ""
                         DetailsMovie(
