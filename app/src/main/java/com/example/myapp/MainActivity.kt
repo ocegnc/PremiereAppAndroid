@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -135,7 +136,7 @@ fun Screen(viewModel: MainViewModel) {
     if (currentDestination?.hasRoute<Series>() == true || (currentDestination?.route=="serieDetail/{tvid}") == true){
         colorBar = Color(0xFFFFDF00)
     }
-    if (currentDestination?.hasRoute<Acteurs>() == true || (currentDestination?.route=="actorDetail/{personid}") == true){
+    if (currentDestination?.hasRoute<Acteurs>() == true || (currentDestination?.route=="actorDetail/{personid}") == true || currentDestination?.hasRoute<Question1>() == true){
         colorBar = Color(0xFF22844E)
     }
 
@@ -281,7 +282,7 @@ fun Screen(viewModel: MainViewModel) {
                         )
                         NavigationBarItem(
                             icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                            label = { Text("Question1") },
+                            label = { Text("Horror") },
                             selected = currentDestination?.hasRoute<Question1>() == true,
                             onClick = { navController.navigate(Question1()) },
                             colors = getNavigationBarItemColors(
@@ -297,8 +298,10 @@ fun Screen(viewModel: MainViewModel) {
     )
 
     { innerPadding ->
-        Row {
-            Column(modifier = Modifier.background(Color(0xFF008080))) {
+        Row(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier
+                .background(Color(0xFF008080))
+                .fillMaxHeight()) {
                 when(windowSizeClass.windowWidthSizeClass) {
                     WindowWidthSizeClass.COMPACT -> {
                     } else -> {
@@ -307,6 +310,7 @@ fun Screen(viewModel: MainViewModel) {
                         NavigationRail(
                             containerColor = colorBar,
                             contentColor = Color.Black,
+                            modifier = Modifier.fillMaxHeight()
                         ) {
                             NavigationRailItem(
                                 icon = {
@@ -321,7 +325,8 @@ fun Screen(viewModel: MainViewModel) {
                                 colors = getNavigationRailItemColors(
                                     currentDestination?.hasRoute<Profil>() == true,
                                     Color(0xFF0ABAB5)
-                                )
+                                ),
+                                modifier = Modifier.weight(0.2f)
                             )
                             NavigationRailItem(
                                 icon = {
@@ -336,7 +341,8 @@ fun Screen(viewModel: MainViewModel) {
                                 colors = getNavigationRailItemColors(
                                     currentDestination?.hasRoute<Films>() == true,
                                     Color(0xFF0ABAB5)
-                                )
+                                ),
+                                modifier = Modifier.weight(0.2f)
                             )
                             NavigationRailItem(
                                 icon = {
@@ -351,7 +357,8 @@ fun Screen(viewModel: MainViewModel) {
                                 colors = getNavigationRailItemColors(
                                     currentDestination?.hasRoute<Series>() == true,
                                     Color(0xFFFFFF62)
-                                )
+                                ),
+                                modifier = Modifier.weight(0.2f)
                             )
                             NavigationRailItem(
                                 icon = { Icon(Icons.Filled.Face, contentDescription = null) },
@@ -361,14 +368,25 @@ fun Screen(viewModel: MainViewModel) {
                                 colors = getNavigationRailItemColors(
                                     currentDestination?.hasRoute<Acteurs>() == true,
                                     Color(0xFF72BF67)
-                                )
+                                ),
+                                modifier = Modifier.weight(0.2f)
+                            )
+                            NavigationRailItem(
+                                icon = { Icon(Icons.Filled.Add, contentDescription = null) },
+                                label = { Text("Horror") },
+                                selected = false,
+                                onClick = { navController.navigate(Question1()) },
+                                colors = getNavigationRailItemColors( currentDestination?.hasRoute<Question1>() == true,
+                                    Color(0xFF72BF67)),
+                                modifier = Modifier.weight(0.2f)
                             )
                             NavigationRailItem(
                                 icon = { Icon(Icons.Filled.ArrowBack, contentDescription = null) },
                                 label = { Text("Retour") },
                                 selected = false,
                                 onClick = { navController.navigateUp() },
-                                colors = getNavigationRailItemColors( false, Color.Transparent)
+                                colors = getNavigationRailItemColors( false, Color.Transparent),
+                                modifier = Modifier.weight(0.2f)
                             )
                         }
                     }
@@ -434,7 +452,7 @@ fun getNavigationRailItemColors(isSelected: Boolean, indicatorColor: Color): Nav
         unselectedIconColor = Color.Black,
         indicatorColor = indicatorColor,
         unselectedTextColor = Color.Black,
-        selectedTextColor = Color.Black
+        selectedTextColor = Color.Black,
     )
 }
 

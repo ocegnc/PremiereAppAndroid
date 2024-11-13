@@ -13,6 +13,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import coil.compose.AsyncImage
 import com.example.myapp.Collection
 import kotlinx.serialization.Serializable
@@ -32,21 +34,37 @@ class Question1
 @Composable
 fun Question1Screen(viewModel: MainViewModel, navController: NavController) {
     val collections by viewModel.collections.collectAsState()
+    val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
     LaunchedEffect(key1 = true) {
         viewModel.getCollection()
     }
 
     Box(modifier = Modifier.fillMaxWidth()) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 20.dp, end = 20.dp)
-        ) {
-            items(collections.results) { collection ->
-                CollectionItem(collection = collection)
+        when (windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp)
+                ) {
+                    items(collections.results) { collection ->
+                        CollectionItem(collection = collection)
+                    }
+                }
+            }else ->{
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(4),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                items(collections.results) { collection ->
+                    CollectionItem(collection = collection)
+                }
             }
+        }
         }
     }
 }
