@@ -253,7 +253,7 @@ fun Biographie(actor: Actor){
         text = actor.biography.ifEmpty { "Aucune biographie disponible." },
         fontSize = 15.sp,
         color = Color.Black,
-        modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+        modifier = Modifier.padding(start = 20.dp, top = 10.dp),
         textAlign = TextAlign.Justify
     )
 }
@@ -276,6 +276,7 @@ fun Casting(castlist: List<Cast>, navController: NavController){
             text = "CASTING",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
+            modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom =10.dp)
         )
 
         LazyRow() {

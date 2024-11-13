@@ -262,12 +262,12 @@ fun Synopsis(movie: Movie){
             text = "SYNOPSIS",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            modifier = Modifier.padding(start = 10.dp, top = 10.dp, bottom =10.dp)
+            modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom =10.dp)
         )
         Text(
             text = movie.overview.ifEmpty { "Aucun résumé disponible." },
             textAlign = TextAlign.Justify,
-            modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
+            modifier = Modifier.padding(start = 20.dp, end = 10.dp, bottom = 10.dp)
         )
     }
 }
