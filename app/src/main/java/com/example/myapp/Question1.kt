@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.myapp.Collection
 import kotlinx.serialization.Serializable
 
@@ -63,6 +64,12 @@ fun CollectionItem(collection: Collection) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(10.dp)
         ) {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w780${collection.poster_path}",
+                contentDescription = "Image film ${collection.name}",
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
             Text(text = collection.name, style = MaterialTheme.typography.bodyMedium)
         }
     }
