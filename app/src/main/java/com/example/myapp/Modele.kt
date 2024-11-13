@@ -3,14 +3,14 @@ package com.example.myapp
 //----------------COLLECTION-----------------------------------
 //https://api.themoviedb.org/3/search/collection?api_key=317519a83cc36ab9367ba50e5aa75b40&language=fr&query=horror
 
-data class Collection(
+data class CollectionList(
     val page: Int = 0,
-    val results: List<Result> = listOf(),
+    val results: List<Collection> = listOf(),
     val total_pages: Int = 0,
     val total_results: Int = 0
 )
 
-data class Result(
+data class Collection(
     val adult: Boolean = false,
     val backdrop_path: String = "",
     val id: Int = 0,
@@ -20,6 +20,7 @@ data class Result(
     val overview: String = "",
     val poster_path: String = ""
 )
+
 
 //----------------MOVIE-----------------------------------
 //https://api.themoviedb.org/3/trending/movie/week?api_key=317519a83cc36ab9367ba50e5aa75b40&language=fr

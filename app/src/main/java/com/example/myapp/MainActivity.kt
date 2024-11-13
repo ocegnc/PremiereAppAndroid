@@ -384,7 +384,7 @@ fun Screen(viewModel: MainViewModel) {
                     composable<Films> { FilmsScreen(viewModel, navController) }
                     composable<Series> { SeriesScreen(viewModel, navController) }
                     composable<Acteurs> { ActeursScreen(viewModel, navController) }
-                    composable<Question1> { Question1Screen(navController) }
+                    composable<Question1> { Question1Screen(viewModel, navController) }
                     composable("movieDetail/{movieid}") { backStackEntry ->
                         val movieId = backStackEntry.arguments?.getString("movieid") ?: ""
                         DetailsMovie(
