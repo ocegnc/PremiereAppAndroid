@@ -5,6 +5,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface TmdbApi {
+    @GET("search/collection")
+    suspend fun getCollection(@Query("api_key") apiKey: String, @Query("language")language : String, @Query("keyword") keyword: String): Collection
+
     @GET("trending/movie/week")
     suspend fun getMovieList(@Query("api_key") apiKey : String, @Query("language")language : String): MovieList
 

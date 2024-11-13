@@ -17,12 +17,19 @@ class MainViewModel(): ViewModel() {
         .build()
         .create(TmdbApi::class.java);
 
+    val collection = MutableStateFlow<Collection>(Collection())
     val movies = MutableStateFlow<MovieList>(MovieList())
     val movie = MutableStateFlow<Movie>(Movie())
     val tv = MutableStateFlow<Tv>(Tv())
     val serie = MutableStateFlow<Serie>(Serie())
     val actors = MutableStateFlow<ActorList>(ActorList())
     val actor = MutableStateFlow<Actor>(Actor())
+
+    fun getCollection(){
+        viewModelScope.launch {
+            collection.value = retrofit.getCollection(apikey,"fr", "horror")
+        }
+    }
 
     fun getMovies(){
         viewModelScope.launch {
