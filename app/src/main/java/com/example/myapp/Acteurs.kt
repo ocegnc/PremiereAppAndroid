@@ -276,7 +276,7 @@ fun Casting(castlist: List<Cast>, navController: NavController){
             text = "CASTING",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
-            modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom =10.dp)
+            modifier = Modifier.padding(start = 20.dp, top = 10.dp, bottom = 10.dp)
         )
 
         LazyRow() {
